@@ -341,6 +341,7 @@ For more information please visit
 <h2 id="how-to-contact-us" class="unnumbered">How to Contact Us</h2>
 <p>You can provide feedback on this text via:</p>
 <ul>
+<li><p><a href="https://github.com/underscoreio/essential-slick/issues">issues</a> and <a href="https://github.com/underscoreio/essential-slick/pulls">pull requests</a> on the <a href="https://github.com/underscoreio/essential-slick/">source repository</a> for this text;</p></li>
 <li><p><a href="https://gitter.im/underscoreio/scala">our Gitter channel</a>; or</p></li>
 <li><p>email to <a href="mailto:hello@underscore.io?subject=Essential%20Slick">hello@underscore.io</a> using the subject line of “Essential Slick”.</p></li>
 </ul>
@@ -533,7 +534,7 @@ libraryDependencies ++= Seq(
 <span class="co">// messages: slick.lifted.TableQuery[MessageTable] = Rep(TableExpansion)</span></code></pre></div>
 <p>Note that we’re not <em>running</em> this query at the moment—we’re simply defining it as a means to build other queries. For example, we can create a <code>SELECT * WHERE</code> style query using a combinator called <code>filter</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> halSays = messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>)
-<span class="co">// halSays: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1724087987)</span></code></pre></div>
+<span class="co">// halSays: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @211781022)</span></code></pre></div>
 <p>Again, we haven’t run this query yet—we’ve defined it as a building block for yet more queries. This demonstrates an important part of Slick’s query language—it is made from <em>composable</em> elements that permit a lot of valuable code re-use.</p>
 <div class="callout callout-info">
 <p><strong>Lifted Embedding</strong></p>
@@ -548,7 +549,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
 <h3 id="configuring-the-database"><span class="header-section-number">1.4.5</span> Configuring the Database</h3>
 <p>We’ve written all of the code so far without connecting to the database. Now it’s time to open a connection and run some SQL. We start by defining a <code>Database</code> object which acts as a factory for managing connections and transactions:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> db = Database.<span class="fu">forConfig</span>(<span class="st">&quot;chapter01&quot;</span>)
-<span class="co">// db: slick.jdbc.H2Profile.backend.Database = slick.jdbc.JdbcBackend$DatabaseDef@54bc0d96</span></code></pre></div>
+<span class="co">// db: slick.jdbc.H2Profile.backend.Database = slick.jdbc.JdbcBackend$DatabaseDef@4dbdd378</span></code></pre></div>
 <p>The parameter to <code>Database.forConfig</code> determines which configuration to use from the <code>application.conf</code> file. This file is found in <code>src/main/resources</code>. It looks like this:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">chapter01 {
   driver = <span class="st">&quot;org.h2.Driver&quot;</span>
@@ -575,7 +576,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
 <p>But we’ve not sent this to the database yet. We’ve just printed the statement, to check it is what we think it should be.</p>
 <p>In Slick, what we run against the database is an <em>action</em>. This is how we create an action for the <code>messages</code> schema:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Unit] = messages.<span class="fu">schema</span>.<span class="fu">create</span>
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@58038c3e</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@55989a3c</span></code></pre></div>
 <p>The result of this <code>messages.schema.create</code> expression is a <code>DBIO[Unit]</code>. This is an object representing a DB action that, when run, completes with a result of type <code>Unit</code>. Anything we run against a database is a <code>DBIO[T]</code> (or a <code>DBIOAction</code>, more generally). This includes queries, updates, schema alterations, and so on.</p>
 <div class="callout callout-info">
 <p><strong>DBIO and DBIOAction</strong></p>
@@ -604,7 +605,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
 <span class="co">// freshTestData: Seq[Message]</span></code></pre></div>
 <p>The insert of this test data is an action:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> insert: DBIO[Option[Int]] = messages ++= freshTestData
-<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Option[Int]] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$MultiInsertAction@6182d214</span></code></pre></div>
+<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Option[Int]] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$MultiInsertAction@10bc1bc7</span></code></pre></div>
 <p>The <code>++=</code> method of <code>message</code> accepts a sequence of <code>Message</code> objects and translates them to a bulk <code>INSERT</code> query (<code>freshTestData</code> is a regular Scala <code>Seq[Message]</code>). We run the <code>insert</code> via <code>db.run</code>, and when the future completes our table is populated with data:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> result: Future[Option[Int]] = db.<span class="fu">run</span>(insert)
 <span class="co">// result: scala.concurrent.Future[Option[Int]] = Future(&lt;not completed&gt;)</span></code></pre></div>
@@ -615,7 +616,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
 <h3 id="selecting-data"><span class="header-section-number">1.4.8</span> Selecting Data</h3>
 <p>Now our database has a few rows in it, we can start selecting data. We do this by taking a query, such as <code>messages</code> or <code>halSays</code>, and turning it into an action via the <code>result</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> messagesAction: DBIO[Seq[Message]] = messages.<span class="fu">result</span>
-<span class="co">// messagesAction: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@6b05b5d0</span>
+<span class="co">// messagesAction: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@52f38878</span>
 
 <span class="kw">val</span> messagesFuture: Future[Seq[Message]] = db.<span class="fu">run</span>(messagesAction)
 <span class="co">// messagesFuture: scala.concurrent.Future[Seq[Message]] = Future(&lt;not completed&gt;)</span>
@@ -668,7 +669,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
   (messages ++= freshTestData) andThen
   halSays.<span class="fu">result</span>
 )
-<span class="co">// actions: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@167588b</span></code></pre></div>
+<span class="co">// actions: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@39ac1b47</span></code></pre></div>
 <p>What <code>andThen</code> does is combine two actions so that the result of the first action is thrown away. The end result of the above <code>actions</code> is the last action in the <code>andThen</code> chain.</p>
 <p>If you want to get funky, <code>&gt;&gt;</code> is another name for <code>andThen</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> sameActions: DBIO[Seq[Message]] = (
@@ -676,7 +677,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
   (messages ++= freshTestData) &gt;&gt;
   halSays.<span class="fu">result</span>
 )
-<span class="co">// sameActions: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@1fe8f915</span></code></pre></div>
+<span class="co">// sameActions: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@459aa96a</span></code></pre></div>
 <p>Combining actions is an important feature of Slick. For example, one reason for combining actions is to wrap them inside a transaction. In <a href="#combining">Chapter 4</a> we’ll see this, and also that actions can be composed with for comprehensions, just like queries.</p>
 <div class="callout callout-danger">
 <p><em>Queries, Actions, Futures… Oh My!</em></p>
@@ -718,7 +719,7 @@ Lifted embedding is the standard way to work with Slick. We will discuss the oth
 <p>Here are some things that might go wrong:</p>
 <p>If you don’t pass the action created by <code>+=</code> to <code>db</code> to be run, you’ll get back the <code>Action</code> object instead.</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages += <span class="fu">Message</span>(<span class="st">&quot;Dave&quot;</span>,<span class="st">&quot;What if I say 'Pretty please'?&quot;</span>)
-<span class="co">// res11: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@3eba65ed</span></code></pre></div>
+<span class="co">// res11: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@32684c69</span></code></pre></div>
 <p>If you don’t wait for the future to complete, you’ll see just the future itself:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> f = db.<span class="fu">run</span>(messages += <span class="fu">Message</span>(<span class="st">&quot;Dave&quot;</span>,<span class="st">&quot;What if I say 'Pretty please'?&quot;</span>))
 <span class="co">// f: scala.concurrent.Future[Int] = Future(&lt;not completed&gt;)</span></code></pre></div>
@@ -809,7 +810,7 @@ result.<span class="fu">foreach</span>(println)
 <h2 id="filtering-results-the-filter-method"><span class="header-section-number">2.2</span> Filtering Results: The <em>filter</em> Method</h2>
 <p>We can create a query for a subset of rows using the <code>filter</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>)
-<span class="co">// res1: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1348981660)</span></code></pre></div>
+<span class="co">// res1: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1285498128)</span></code></pre></div>
 <p>The parameter to <code>filter</code> is a function from an instance of <code>MessageTable</code> to a value of type <code>Rep[Boolean]</code> representing a <code>WHERE</code> clause for our query:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).<span class="fu">result</span>.<span class="fu">statements</span>.<span class="fu">mkString</span>
 <span class="co">// res2: String = select &quot;sender&quot;, &quot;content&quot;, &quot;id&quot; from &quot;message&quot; where &quot;sender&quot; = 'HAL'</span></code></pre></div>
@@ -829,7 +830,7 @@ result.<span class="fu">foreach</span>(println)
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span> { messageTable: MessageTable =&gt;
   messageTable.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>
 }
-<span class="co">// res3: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1868895893)</span></code></pre></div>
+<span class="co">// res3: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1819766438)</span></code></pre></div>
 <p>This makes sense: <code>messageTable.sender</code> is one of the columns we defined in <code>MessageTable</code> above, and <code>messageTable.sender === &quot;HAL&quot;</code> creates a Scala value representing the SQL expression <code>message.sender = 'HAL'</code>.</p>
 <p>This is the process that allows Slick to type-check our queries. <code>Query</code>s have access to the type of the <code>Table</code> used to create them, allowing us to directly reference the columns on the <code>Table</code> when we’re using combinators like <code>map</code> and <code>filter</code>. Every column knows its own data type, so Slick can ensure we only compare columns of compatible types. If we try to compare <code>sender</code> to an <code>Int</code>, for example, we get a type error:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">scala&gt; messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="dv">123</span>)
@@ -864,7 +865,7 @@ result.<span class="fu">foreach</span>(println)
 <span class="kw">import</span> scala.<span class="fu">concurrent</span>.<span class="fu">duration</span>._
 
 <span class="kw">val</span> db = Database.<span class="fu">forConfig</span>(<span class="st">&quot;chapter02&quot;</span>)
-<span class="co">// db: slick.jdbc.H2Profile.backend.Database = slick.jdbc.JdbcBackend$DatabaseDef@53134146</span>
+<span class="co">// db: slick.jdbc.H2Profile.backend.Database = slick.jdbc.JdbcBackend$DatabaseDef@626a7bf0</span>
 
 <span class="kw">def</span> exec[T](action: DBIO[T]): T =
   Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <span class="fl">2.</span>seconds)
@@ -899,7 +900,7 @@ result.<span class="fu">foreach</span>(println)
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> pods = messages.
   <span class="fu">map</span>(_.<span class="fu">content</span>).
   filter{content:Rep[String] =&gt; content like <span class="st">&quot;%pod%&quot;</span>}
-<span class="co">// pods: slick.lifted.Query[slick.lifted.Rep[String],String,Seq] = Rep(Filter @96114419)</span>
+<span class="co">// pods: slick.lifted.Query[slick.lifted.Rep[String],String,Seq] = Rep(Filter @1201776842)</span>
 
 <span class="fu">exec</span>(pods.<span class="fu">result</span>)
 <span class="co">// res11: Seq[String] = Vector(Open the pod bay doors, HAL.)</span></code></pre></div>
@@ -939,7 +940,7 @@ result.<span class="fu">foreach</span>(println)
 
 <span class="kw">val</span> bayMentioned: DBIO[Boolean] =
   containsBay.<span class="fu">exists</span>.<span class="fu">result</span>
-<span class="co">// bayMentioned: slick.jdbc.H2Profile.api.DBIO[Boolean] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@1d3ea02</span></code></pre></div>
+<span class="co">// bayMentioned: slick.jdbc.H2Profile.api.DBIO[Boolean] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@54dee8f0</span></code></pre></div>
 <p>The <code>containsBay</code> query returns all messages that mention “bay”. We can then use this query in the <code>bayMentioned</code> expression to determine what to execute.</p>
 <p>The above will generate SQL which looks similar to this:</p>
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">select</span> <span class="kw">exists</span>(
@@ -1322,7 +1323,7 @@ Some[Long] &lt;: slick.<span class="fu">lifted</span>.<span class="fu">Rep</span
                       ^</code></pre></div>
 <p>If you find yourself in this situation, remember you can always provide a type ascription to the value:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">id</span> === (Some(123L): Option[Long]) )
-<span class="co">// res26: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @657582482)</span></code></pre></div>
+<span class="co">// res26: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @403672262)</span></code></pre></div>
 <h2 id="controlling-queries-sort-take-and-drop"><span class="header-section-number">2.8</span> Controlling Queries: Sort, Take, and Drop</h2>
 <p>There are a trio of functions used to control the order and number of results returned from a query. This is great for pagination of a result set, but the methods listed in the table below can be used independently.</p>
 <div class="table-responsive">
@@ -1482,7 +1483,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>What happens if you use <code>head</code> to find a message from “Alice” (note that Alice has sent no messages).</p>
 <div class="solution">
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> msg1 = messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).<span class="fu">map</span>(_.<span class="fu">content</span>).<span class="fu">result</span>.<span class="fu">head</span>
-<span class="co">// msg1: slick.sql.SqlAction[String,slick.dbio.NoStream,slick.dbio.Effect.Read] = slick.jdbc.StreamingInvokerAction$HeadAction@49c21e73</span></code></pre></div>
+<span class="co">// msg1: slick.sql.SqlAction[String,slick.dbio.NoStream,slick.dbio.Effect.Read] = slick.jdbc.StreamingInvokerAction$HeadAction@2447a5f1</span></code></pre></div>
 <p>You should get an action that produces “Affirmative, Dave. I read you.”</p>
 <p>For Alice, <code>head</code> will throw a run-time exception as we are trying to return the head of an empty collection. Using <code>headOption</code> will prevent the exception.</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;Alice&quot;</span>).<span class="fu">result</span>.<span class="fu">headOption</span>)
@@ -1494,7 +1495,7 @@ $ <span class="ex">./sbt.sh</span>
 <div class="solution">
 <p>It’s <code>drop</code> and <code>take</code> to the rescue:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> msgs = messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).<span class="fu">drop</span>(<span class="dv">1</span>).<span class="fu">take</span>(<span class="dv">5</span>).<span class="fu">result</span>
-<span class="co">// msgs: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@18c473fc</span></code></pre></div>
+<span class="co">// msgs: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@723c5ed6</span></code></pre></div>
 <p>HAL has only two messages in total. Therefore our result set should contain one messages</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">Message</span>(HAL,I'm sorry, Dave. I'm afraid I can't <span class="kw">do</span> that.,<span class="dv">4</span>)</code></pre></div>
 <p>And asking for any more messages will result in an empty collection.</p>
@@ -1511,7 +1512,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>The method <code>startsWith</code> on a <code>String</code> tests to see if the string starts with a particular sequence of characters. Slick also implements this for string columns. Find the message that starts with “Open”. How is that query implemented in SQL?</p>
 <div class="solution">
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">content</span> startsWith <span class="st">&quot;Open&quot;</span>)
-<span class="co">// res43: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1035170680)</span></code></pre></div>
+<span class="co">// res43: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @654876308)</span></code></pre></div>
 <p>The query is implemented in terms of <code>LIKE</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">content</span> startsWith <span class="st">&quot;Open&quot;</span>).<span class="fu">result</span>.<span class="fu">statements</span>.<span class="fu">head</span>
 <span class="co">// res44: String = select &quot;sender&quot;, &quot;content&quot;, &quot;id&quot; from &quot;message&quot; where &quot;content&quot; like 'Open%' escape '^'</span></code></pre></div>
@@ -1522,10 +1523,10 @@ $ <span class="ex">./sbt.sh</span>
 <div class="solution">
 <p>If you have familiarity with SQL <code>like</code> expressions, it probably wasn’t too hard to find a case-sensitive version of this query:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">content</span> like <span class="st">&quot;%do%&quot;</span>)
-<span class="co">// res45: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1905925094)</span></code></pre></div>
+<span class="co">// res45: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1797109362)</span></code></pre></div>
 <p>To make it case sensitive you could use <code>toLowerCase</code> on the <code>content</code> field:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">content</span>.<span class="fu">toLowerCase</span> like <span class="st">&quot;%do%&quot;</span>)
-<span class="co">// res46: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @804613490)</span></code></pre></div>
+<span class="co">// res46: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1396375231)</span></code></pre></div>
 <p>We can do this because <code>content</code> is a <code>Rep[String]</code> and that <code>Rep</code> has implemented <code>toLowerCase</code>. That means, the <code>toLowerCase</code> will be translated into meaningful SQL.</p>
 <p>There will be three results: “<em>Do</em> you read me”, “Open the pod bay <em>do</em>ors”, and “I’m afraid I can’t <em>do</em> that”.</p>
 </div>
@@ -1559,7 +1560,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>To insert a single row into a table we use the <code>+=</code> method. Note that, unlike the select queries we’ve seen, this creates a <code>DBIOAction</code> immediately without an intermediate <code>Query</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action =
   messages += <span class="fu">Message</span>(<span class="st">&quot;HAL&quot;</span>, <span class="st">&quot;No. Seriously, Dave, I can't let you in.&quot;</span>)
-<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@ea4d93f</span>
+<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@4ed4a5a</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res1: Int = 1</span></code></pre></div>
@@ -1594,7 +1595,7 @@ $ <span class="ex">./sbt.sh</span>
    <span class="st">&quot;HAL&quot;</span>,
    <span class="st">&quot;I'm a computer, what would I do with a Christmas card anyway?&quot;</span>,
    1000L)
-<span class="co">// forceInsertAction: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@37338c29</span></code></pre></div>
+<span class="co">// forceInsertAction: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@505862f5</span></code></pre></div>
 <p>Notice that the SQL generated for this action includes a manually specified ID, and that running the action results in a record with the ID being inserted:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">forceInsertAction.<span class="fu">statements</span>.<span class="fu">head</span>
 <span class="co">// res4: String = insert into &quot;message&quot; (&quot;sender&quot;,&quot;content&quot;,&quot;id&quot;)  values (?,?,?)</span>
@@ -1608,7 +1609,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>When the database allocates primary keys for us it’s often the case that we want get the key back after an insert. Slick supports this via the <code>returning</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> insert: DBIO[Long] =
   messages returning messages.<span class="fu">map</span>(_.<span class="fu">id</span>) += <span class="fu">Message</span>(<span class="st">&quot;Dave&quot;</span>, <span class="st">&quot;Point taken.&quot;</span>)
-<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Long] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@1c815d52</span>
+<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Long] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@3c9663b6</span>
 
 <span class="kw">val</span> pk: Long = <span class="fu">exec</span>(insert)
 <span class="co">// pk: Long = 1001</span></code></pre></div>
@@ -1657,11 +1658,11 @@ $ <span class="ex">./sbt.sh</span>
   messages returning messages.<span class="fu">map</span>(_.<span class="fu">id</span>) into { (message, id) =&gt;
     message.<span class="fu">copy</span>(id = id)
   }
-<span class="co">// messagesReturningRow: slick.jdbc.H2Profile.IntoInsertActionComposer[MessageTable#TableElementType,Message] = slick.jdbc.JdbcActionComponent$ReturningInsertActionComposerImpl@5f2e2a5a</span>
+<span class="co">// messagesReturningRow: slick.jdbc.H2Profile.IntoInsertActionComposer[MessageTable#TableElementType,Message] = slick.jdbc.JdbcActionComponent$ReturningInsertActionComposerImpl@36b9d2a9</span>
 
 <span class="kw">val</span> insert: DBIO[Message] =
   messagesReturningRow += <span class="fu">Message</span>(<span class="st">&quot;Dave&quot;</span>, <span class="st">&quot;You're such a jerk.&quot;</span>)
-<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Message] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@2d36b4c9</span>
+<span class="co">// insert: slick.jdbc.H2Profile.api.DBIO[Message] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@2e18ff60</span>
 
 <span class="fu">exec</span>(insert)
 <span class="co">// res11: Message = Message(Dave,You're such a jerk.,1003)</span></code></pre></div>
@@ -1713,7 +1714,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>That looks quite involved, but we can build it up gradually.</p>
 <p>The tricky part of this is the <code>select 'Stanley', 'Cut!'</code> part, as there is no <code>FROM</code> clause there. We saw an example of how to create that in <a href="#constantQueries">Chapter 2</a>, with <code>Query.apply</code>. For this situation it would be:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> data = Query((<span class="st">&quot;Stanley&quot;</span>, <span class="st">&quot;Cut!&quot;</span>))
-<span class="co">// data: slick.lifted.Query[(slick.lifted.ConstColumn[String], slick.lifted.ConstColumn[String]),(String, String),Seq] = Rep(Pure $@1356718942)</span></code></pre></div>
+<span class="co">// data: slick.lifted.Query[(slick.lifted.ConstColumn[String], slick.lifted.ConstColumn[String]),(String, String),Seq] = Rep(Pure $@803685023)</span></code></pre></div>
 <p><code>data</code> is a constant query that returns a fixed value—a tuple of two columns. It’s the equivalent of running <code>SELECT 'Stanley', 'Cut!';</code> against the database, which is one part of the query we need.</p>
 <p>We also need to be able to test to see if the data already exists. That’s straightforward:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> exists =
@@ -1723,13 +1724,13 @@ $ <span class="ex">./sbt.sh</span>
 <span class="co">// exists: slick.lifted.Rep[Boolean] = Rep(Apply Function exists)</span></code></pre></div>
 <p>We want to use the <code>data</code> when the row <em>doesn’t</em> exist, so combine the <code>data</code> and <code>exists</code> with <code>filterNot</code> rather than <code>filter</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> selectExpression = data.<span class="fu">filterNot</span>(_ =&gt; exists)
-<span class="co">// selectExpression: slick.lifted.Query[(slick.lifted.ConstColumn[String], slick.lifted.ConstColumn[String]),(String, String),Seq] = Rep(Filter @369670741)</span></code></pre></div>
+<span class="co">// selectExpression: slick.lifted.Query[(slick.lifted.ConstColumn[String], slick.lifted.ConstColumn[String]),(String, String),Seq] = Rep(Filter @1296109653)</span></code></pre></div>
 <p>Finally, we need to apply this query with <code>forceInsertQuery</code>. But remember the column types for the insert and select need to match up. So we <code>map</code> on <code>messages</code> to make sure that’s the case:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action =
   messages.
     <span class="fu">map</span>(m =&gt; m.<span class="fu">sender</span> -&gt; m.<span class="fu">content</span>).
     <span class="fu">forceInsertQuery</span>(selectExpression)
-<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$InsertQueryAction@699178bf</span>
+<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$InsertQueryAction@5f65d31c</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res17: Int = 1</span>
@@ -1742,7 +1743,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>Slick lets us delete rows using the same <code>Query</code> objects we saw in <a href="#selecting">Chapter 2</a>. That is, we specify which rows to delete using the <code>filter</code> method, and then call <code>delete</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> removeHal: DBIO[Int] =
   messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).<span class="fu">delete</span>
-<span class="co">// removeHal: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@7f411da0</span>
+<span class="co">// removeHal: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@3ada2292</span>
 
 <span class="fu">exec</span>(removeHal)
 <span class="co">// res19: Int = 9</span></code></pre></div>
@@ -1778,13 +1779,13 @@ $ <span class="ex">./sbt.sh</span>
 <span class="co">// res24: String = update &quot;message&quot; set &quot;sender&quot; = ? where &quot;message&quot;.&quot;sender&quot; = 'HAL'</span></code></pre></div>
 <p>Let’s break down the code in the Scala expression. By building our update query from the <code>messages</code> <code>TableQuery</code>, we specify that we want to update records in the <code>message</code> table in the database:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> messagesByHal = messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>)
-<span class="co">// messagesByHal: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @358443748)</span></code></pre></div>
+<span class="co">// messagesByHal: slick.lifted.Query[MessageTable,MessageTable#TableElementType,Seq] = Rep(Filter @1017905605)</span></code></pre></div>
 <p>We only want to update the <code>sender</code> column, so we use <code>map</code> to reduce the query to just that column:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> halSenderCol = messagesByHal.<span class="fu">map</span>(_.<span class="fu">sender</span>)
 <span class="co">// halSenderCol: slick.lifted.Query[slick.lifted.Rep[String],String,Seq] = Rep(Bind)</span></code></pre></div>
 <p>Finally we call the <code>update</code> method, which takes a parameter of the <em>unpacked</em> type (in this case <code>String</code>):</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Int] = halSenderCol.<span class="fu">update</span>(<span class="st">&quot;HAL 9000&quot;</span>)
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@679cebb3</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@253d9345</span></code></pre></div>
 <p>Running that action would return the number of rows changed.</p>
 <h3 id="updating-multiple-fields"><span class="header-section-number">3.3.2</span> Updating Multiple Fields</h3>
 <p>We can update more than one field at the same time by mapping the query to a tuple of the columns we care about…</p>
@@ -1796,7 +1797,7 @@ $ <span class="ex">./sbt.sh</span>
 <p>…and then supplying the tuple values we want to used in the update:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Int] =
   query.<span class="fu">update</span>((<span class="st">&quot;HAL 9000&quot;</span>, <span class="st">&quot;Sure, Dave. Come right in.&quot;</span>))
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@5254b6e7</span>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@358a3691</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res27: Int = 1</span>
@@ -1820,7 +1821,7 @@ messages.
   <span class="fu">filter</span>(_.<span class="fu">id</span> === 1016L).
   <span class="fu">map</span>(m =&gt; (m.<span class="fu">sender</span>, m.<span class="fu">content</span>).<span class="fu">mapTo</span>[NameText]).
   <span class="fu">update</span>(newValue)
-<span class="co">// res30: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@4a48024</span></code></pre></div>
+<span class="co">// res30: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@f14dbdd</span></code></pre></div>
 <h3 id="updating-with-a-computed-value"><span class="header-section-number">3.3.3</span> Updating with a Computed Value</h3>
 <p>Let’s now turn to more interesting updates. How about converting every message to be all capitals? Or adding an exclamation mark to the end of each message? Both of these queries involve expressing the desired result in terms of the current value in the database. In SQL we might write something like:</p>
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">update</span> <span class="ot">&quot;message&quot;</span> <span class="kw">set</span> <span class="ot">&quot;content&quot;</span> = <span class="fu">CONCAT</span>(<span class="ot">&quot;content&quot;</span>, <span class="st">'!'</span>)</code></pre></div>
@@ -1884,7 +1885,7 @@ messages.
 <span class="co">// query: slick.lifted.Query[(slick.lifted.Rep[String], slick.lifted.Rep[String]),(String, String),Seq] = Rep(Bind)</span>
 
 <span class="kw">val</span> action = query += ( (<span class="st">&quot;HAL&quot;</span>,<span class="st">&quot;Helllllo Dave&quot;</span>) )
-<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@214f83fc</span>
+<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@3e382f86</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res34: Int = 1</span></code></pre></div>
@@ -1910,7 +1911,7 @@ messages.
   messages returning messages.<span class="fu">map</span>(_.<span class="fu">id</span>) into { (message, id) =&gt;
     message.<span class="fu">copy</span>(id = id)
   }
-<span class="co">// messagesReturningRow: slick.jdbc.H2Profile.IntoInsertActionComposer[MessageTable#TableElementType,Message] = slick.jdbc.JdbcActionComponent$ReturningInsertActionComposerImpl@2f18742d</span>
+<span class="co">// messagesReturningRow: slick.jdbc.H2Profile.IntoInsertActionComposer[MessageTable#TableElementType,Message] = slick.jdbc.JdbcActionComponent$ReturningInsertActionComposerImpl@8ed110d</span>
 
 <span class="fu">exec</span>(messagesReturningRow ++= conversation).<span class="fu">foreach</span>(println)
 <span class="co">// Message(Bob,Hi Alice,1018)</span>
@@ -1929,7 +1930,7 @@ messages.
 <div class="solution">
 <p>The pattern is to fine a query to select the data, and then use it with <code>delete</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">messages.<span class="fu">filter</span>(_.<span class="fu">content</span> like <span class="st">&quot;%sorry%&quot;</span>).<span class="fu">delete</span>
-<span class="co">// res36: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@52598c58</span></code></pre></div>
+<span class="co">// res36: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@3172389e</span></code></pre></div>
 </div>
 <h3 id="update-using-a-for-comprehension"><span class="header-section-number">3.5.4</span> Update Using a For Comprehension</h3>
 <p>Rewrite the update statement below to use a for comprehension.</p>
@@ -1937,7 +1938,7 @@ messages.
   <span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).
   <span class="fu">map</span>(msg =&gt; (msg.<span class="fu">sender</span>, msg.<span class="fu">content</span>)).
   <span class="fu">update</span>((<span class="st">&quot;HAL 9000&quot;</span>, <span class="st">&quot;Rebooting, please wait...&quot;</span>))
-<span class="co">// rebootLoop: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@239b44cb</span></code></pre></div>
+<span class="co">// rebootLoop: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@7182705a</span></code></pre></div>
 <p>Which style do you prefer?</p>
 <div class="solution">
 <p>We’ve split this into a <code>query</code> and then an <code>update</code>:</p>
@@ -1947,7 +1948,7 @@ messages.
 <span class="co">// halMessages: slick.lifted.Query[(slick.lifted.Rep[String], slick.lifted.Rep[String]),(String, String),Seq] = Rep(Bind)</span>
 
 <span class="kw">val</span> rebootLoop = halMessages.<span class="fu">update</span>((<span class="st">&quot;HAL 9000&quot;</span>, <span class="st">&quot;Rebooting, please wait...&quot;</span>))
-<span class="co">// rebootLoop: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@425482c9</span></code></pre></div>
+<span class="co">// rebootLoop: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$UpdateActionExtensionMethodsImpl$$anon$8@62871168</span></code></pre></div>
 </div>
 <h3 id="selective-memory"><span class="header-section-number">3.5.5</span> Selective Memory</h3>
 <p>Delete <code>HAL</code>s first two messages. This is a more difficult exercise.</p>
@@ -1967,7 +1968,7 @@ messages.
       map    {_.<span class="fu">id</span>}.
       <span class="fu">take</span>(<span class="dv">2</span>)
   }.<span class="fu">delete</span>
-<span class="co">// selectiveMemory: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@6768db80</span>
+<span class="co">// selectiveMemory: slick.jdbc.H2Profile.ProfileAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@2e63dbe0</span>
 
 selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <span class="co">// res37: String = delete from &quot;message&quot; where &quot;message&quot;.&quot;id&quot; in (select &quot;id&quot; from &quot;message&quot; where &quot;sender&quot; = 'HAL' order by &quot;id&quot; limit 2)</span></code></pre></div>
@@ -2104,7 +2105,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <p>The simplest way to run one action after another is perhaps <code>andThen</code>. The combined actions are both run, but only the result of the second is returned:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> reset: DBIO[Int] =
   messages.<span class="fu">delete</span> andThen messages.<span class="fu">size</span>.<span class="fu">result</span>
-<span class="co">// reset: slick.jdbc.H2Profile.api.DBIO[Int] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@232c1fbe</span>
+<span class="co">// reset: slick.jdbc.H2Profile.api.DBIO[Int] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@6b49de4a</span>
 
 <span class="fu">exec</span>(reset)
 <span class="co">// res1: Int = 0</span></code></pre></div>
@@ -2118,7 +2119,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <p>If you have a bunch of actions you want to run, you can use <code>DBIO.seq</code> to combine them:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> reset: DBIO[Unit] =
   DBIO.<span class="fu">seq</span>(messages.<span class="fu">delete</span>, messages.<span class="fu">size</span>.<span class="fu">result</span>)
-<span class="co">// reset: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.dbio.DBIOAction$$anon$4@41e7a00a</span></code></pre></div>
+<span class="co">// reset: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.dbio.DBIOAction$$anon$4@205f2bb6</span></code></pre></div>
 <p>This is rather like combining the actions with <code>andThen</code>, but even the last value is discarded.</p>
 <h3 id="map"><span class="header-section-number">4.2.3</span> <code>map</code></h3>
 <p>Mapping over an action is a way to set up a transformation of a value from the database. The transformation will run on the result of the action when it is returned by the database.</p>
@@ -2132,11 +2133,11 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 
 <span class="kw">val</span> text: DBIO[Option[String]] =
   messages.<span class="fu">map</span>(_.<span class="fu">content</span>).<span class="fu">result</span>.<span class="fu">headOption</span>
-<span class="co">// text: slick.jdbc.H2Profile.api.DBIO[Option[String]] = slick.jdbc.StreamingInvokerAction$HeadOptionAction@71d0323e</span>
+<span class="co">// text: slick.jdbc.H2Profile.api.DBIO[Option[String]] = slick.jdbc.StreamingInvokerAction$HeadOptionAction@3518aa40</span>
 
 <span class="kw">val</span> backwards: DBIO[Option[String]] =
   text.<span class="fu">map</span>(optionalContent =&gt; optionalContent.<span class="fu">map</span>(_.<span class="fu">reverse</span>))
-<span class="co">// backwards: slick.jdbc.H2Profile.api.DBIO[Option[String]] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@71d0323e,slick.dbio.DBIOAction$$Lambda$8409/1636618585@3b2cce2a,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// backwards: slick.jdbc.H2Profile.api.DBIO[Option[String]] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@3518aa40,slick.dbio.DBIOAction$$Lambda$8409/279583848@150e416a,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(backwards)
 <span class="co">// res4: Option[String] = Some(?LAH ,em daer uoy oD .LAH ,olleH)</span></code></pre></div>
@@ -2150,7 +2151,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <p>Combinators everywhere!</p>
 <p>This example transformed an <code>Option[String]</code> to another <code>Option[String]</code>. As you may expect if <code>map</code> changes the type of a value, the type of <code>DBIO</code> changes too:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">text.<span class="fu">map</span>(os =&gt; os.<span class="fu">map</span>(_.<span class="fu">length</span>))
-<span class="co">// res5: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.All] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@71d0323e,slick.dbio.DBIOAction$$Lambda$8409/1636618585@2735022a,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span></code></pre></div>
+<span class="co">// res5: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.All] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@3518aa40,slick.dbio.DBIOAction$$Lambda$8409/279583848@4fe5965a,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span></code></pre></div>
 <p>Note that the first type parameter on the <code>DBIOAction</code> is now <code>Option[Int]</code> (as <code>length</code> returns an <code>Int</code>), not <code>Option[String]</code>.</p>
 <div class="callout callout-info">
 <p><strong>Execution Context Required</strong></p>
@@ -2182,7 +2183,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <p>As an example, let’s write a method to remove all the crew’s messages, and post a message saying how many messages were removed. This will involve an <code>INSERT</code> and a <code>DELETE</code>, both of which we’re familiar with:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> delete: DBIO[Int] =
   messages.<span class="fu">delete</span>
-<span class="co">// delete: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@3408480</span>
+<span class="co">// delete: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@15a8cc14</span>
 
 <span class="kw">def</span> <span class="fu">insert</span>(count: Int) =
   messages += <span class="fu">Message</span>(<span class="st">&quot;NOBODY&quot;</span>, s<span class="st">&quot;I removed ${count} messages&quot;</span>)
@@ -2193,7 +2194,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 
 <span class="kw">val</span> resetMessagesAction: DBIO[Int] =
   delete.<span class="fu">flatMap</span>{ count =&gt; <span class="fu">insert</span>(count) }
-<span class="co">// resetMessagesAction: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@3408480,$$Lambda$8414/1111403396@76255c16,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// resetMessagesAction: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@15a8cc14,$$Lambda$8414/1192172977@31e78d32,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(resetMessagesAction)
 <span class="co">// res6: Int = 1</span></code></pre></div>
@@ -2208,7 +2209,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
     <span class="kw">case</span> <span class="dv">0</span> =&gt; DBIO.<span class="fu">successful</span>(<span class="dv">0</span>)
     <span class="kw">case</span> n =&gt; <span class="fu">insert</span>(n)
   }
-<span class="co">// resetMessagesAction: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@3408480,$$Lambda$8416/464001431@4ddf3ab1,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span></code></pre></div>
+<span class="co">// resetMessagesAction: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$DeleteActionExtensionMethodsImpl$$anon$4@15a8cc14,$$Lambda$8416/300314487@674dbb1a,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span></code></pre></div>
 <p>We’ve decided a result of <code>0</code> is right if no message was inserted. But the point here is that <code>flatMap</code> gives us arbitrary control over how actions can be combined.</p>
 <p>Occasionally the compiler will complain about a <code>flatMap</code> and need your help to figuring out the types. Recall that <code>DBIO[T]</code> is an alias for <code>DBIOAction[T,S,E]</code>, encoding streaming and effects. When mixing effects, such as inserts and selects, you may need to explicitly specify the type parameters to apply to the resulting action:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">query.<span class="fu">flatMap</span>[Int, NoStream, Effect.<span class="fu">All</span>] { result =&gt; ... }</code></pre></div>
@@ -2243,14 +2244,14 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <span class="kw">val</span> updates: DBIO[Seq[DBIO[Int]]] =
   messages.<span class="fu">result</span>.
   <span class="fu">map</span>(msgs =&gt; msgs.<span class="fu">map</span>(reverse))
-<span class="co">// updates: slick.jdbc.H2Profile.api.DBIO[Seq[slick.jdbc.H2Profile.api.DBIO[Int]]] = FlatMapAction(slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@5ad7c6a1,slick.dbio.DBIOAction$$Lambda$8409/1636618585@772b88bf,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span></code></pre></div>
+<span class="co">// updates: slick.jdbc.H2Profile.api.DBIO[Seq[slick.jdbc.H2Profile.api.DBIO[Int]]] = FlatMapAction(slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@1a7ae644,slick.dbio.DBIOAction$$Lambda$8409/279583848@1fe1fb89,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span></code></pre></div>
 <p>…which will give us an action that returns actions! Note the crazy type signature.</p>
 <p>You can find yourself in this awkward situation when you’re trying to do something like a join, but not quite. The puzzle is how to run this kind of a beast.</p>
 <p>This is where <code>DBIO.sequence</code> saves us. Rather than produce many actions via <code>msgs.map(reverse)</code> we use <code>DBIO.sequence</code> to return a single action:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> updates: DBIO[Seq[Int]] =
   messages.<span class="fu">result</span>.
   <span class="fu">flatMap</span>(msgs =&gt; DBIO.<span class="fu">sequence</span>(msgs.<span class="fu">map</span>(reverse)))
-<span class="co">// updates: slick.jdbc.H2Profile.api.DBIO[Seq[Int]] = FlatMapAction(slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@44ad0cf3,$$Lambda$8418/1386559359@40f962ee,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span></code></pre></div>
+<span class="co">// updates: slick.jdbc.H2Profile.api.DBIO[Seq[Int]] = FlatMapAction(slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@6540afd,$$Lambda$8418/712528579@745b178a,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span></code></pre></div>
 <p>The difference is:</p>
 <ul>
 <li>we’ve wrapped the <code>Seq[DBIO]</code> with <code>DBIO.sequence</code> to give a single <code>DBIO[Seq[Int]]</code>; and</li>
@@ -2292,7 +2293,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
   DBIO.<span class="fu">fold</span>(reports, default) {
     (total, report) =&gt; total + report
 }
-<span class="co">// summary: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(FlatMapAction(SuccessAction(0),slick.dbio.DBIOAction$$$Lambda$8422/1366662645@5b250a19,scala.concurrent.impl.ExecutionContextImpl@2276dcc7),slick.dbio.DBIOAction$$$Lambda$8422/1366662645@2c312772,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// summary: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(FlatMapAction(SuccessAction(0),slick.dbio.DBIOAction$$$Lambda$8422/1099555214@60246f79,scala.concurrent.impl.ExecutionContextImpl@2d304788),slick.dbio.DBIOAction$$$Lambda$8422/1099555214@7d8a3108,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(summary)
 <span class="co">// res13: Int = 42</span></code></pre></div>
@@ -2301,7 +2302,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
 <p>We’ve seen how <code>DBIO.seq</code> combines actions and ignores the results. We’ve also seen that <code>andThen</code> combines actions and keeps one result. If you want to keep both results, <code>zip</code> is the combinator for you:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> zip: DBIO[(Int, Seq[Message])] =
   messages.<span class="fu">size</span>.<span class="fu">result</span> zip messages.<span class="fu">filter</span>(_.<span class="fu">sender</span> === <span class="st">&quot;HAL&quot;</span>).<span class="fu">result</span>
-<span class="co">// zip: slick.jdbc.H2Profile.api.DBIO[(Int, Seq[Message])] = slick.dbio.SynchronousDatabaseAction$$anon$5@3e7377c7</span>
+<span class="co">// zip: slick.jdbc.H2Profile.api.DBIO[(Int, Seq[Message])] = slick.dbio.SynchronousDatabaseAction$$anon$5@663b9a04</span>
 
 <span class="co">// Make sure we have some messages from HAL:</span>
 <span class="fu">exec</span>(messages ++= freshTestData)
@@ -2326,7 +2327,7 @@ selectiveMemory.<span class="fu">statements</span>.<span class="fu">head</span>
   <span class="kw">case</span> Some(err) =&gt; <span class="fu">log</span>(err)
   <span class="kw">case</span> None      =&gt; DBIO.<span class="fu">successful</span>(<span class="dv">0</span>)
 }
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = CleanUpAction(FailureAction(java.lang.RuntimeException: Boom!),$$Lambda$8441/1930129976@1d5436cf,true,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Int] = CleanUpAction(FailureAction(java.lang.RuntimeException: Boom!),$$Lambda$8441/279029177@139b9ed,true,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span></code></pre></div>
 <p>The result of running this <code>action</code> is still the original exception…</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">java.<span class="fu">lang</span>.<span class="fu">RuntimeException</span>: Boom!
 ... <span class="dv">45</span> elided</code></pre></div>
@@ -2438,7 +2439,7 @@ exec {
   DBIO.<span class="fu">failed</span>(<span class="kw">new</span> Exception(<span class="st">&quot;agggh my ears&quot;</span>))                        &gt;&gt;
   (messages += <span class="fu">Message</span>(<span class="st">&quot;HAL&quot;</span>, <span class="st">&quot;Give me your answer do&quot;</span>))
   ).<span class="fu">transactionally</span>
-<span class="co">// willRollback: slick.dbio.DBIOAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect with slick.dbio.Effect.Write with slick.dbio.Effect.Transactional] = slick.dbio.SynchronousDatabaseAction$$anon$11@509a8164</span>
+<span class="co">// willRollback: slick.dbio.DBIOAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect with slick.dbio.Effect.Write with slick.dbio.Effect.Transactional] = slick.dbio.SynchronousDatabaseAction$$anon$11@71baa16a</span>
 
 <span class="fu">exec</span>(willRollback.<span class="fu">asTry</span>)
 <span class="co">// res26: scala.util.Try[Int] = Failure(java.lang.Exception: agggh my ears)</span></code></pre></div>
@@ -2454,13 +2455,13 @@ exec {
 <p>In Chapter 1 we created a schema and populated the database as separate actions. Use your newly found knowledge to combine them.</p>
 <p>This exercise expects to start with an empty database. If you’re already in the REPL and the database exists, you’ll need to drop the table first:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> drop:     DBIO[Unit]        = messages.<span class="fu">schema</span>.<span class="fu">drop</span>
-<span class="co">// drop: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$7@4cf24702</span>
+<span class="co">// drop: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$7@283bde50</span>
 
 <span class="kw">val</span> create:   DBIO[Unit]        = messages.<span class="fu">schema</span>.<span class="fu">create</span>
-<span class="co">// create: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@16b6bc47</span>
+<span class="co">// create: slick.jdbc.H2Profile.api.DBIO[Unit] = slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@245d597b</span>
 
 <span class="kw">val</span> populate: DBIO[Option[Int]] = messages ++= freshTestData
-<span class="co">// populate: slick.jdbc.H2Profile.api.DBIO[Option[Int]] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$MultiInsertAction@4bdfed5b</span>
+<span class="co">// populate: slick.jdbc.H2Profile.api.DBIO[Option[Int]] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$MultiInsertAction@187883cc</span>
 
 <span class="fu">exec</span>(drop)</code></pre></div>
 <div class="solution">
@@ -2469,7 +2470,7 @@ exec {
 <span class="co">// res29: Option[Int] = Some(4)</span></code></pre></div>
 <p>If we don’t care about any of the values we could also use <code>DBIO.seq</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> allInOne = DBIO.<span class="fu">seq</span>(drop,create,populate)
-<span class="co">// allInOne: slick.dbio.DBIOAction[Unit,slick.dbio.NoStream,slick.dbio.Effect.All] = slick.dbio.DBIOAction$$anon$4@47fdb918</span>
+<span class="co">// allInOne: slick.dbio.DBIOAction[Unit,slick.dbio.NoStream,slick.dbio.Effect.All] = slick.dbio.DBIOAction$$anon$4@7156d01b</span>
 
 <span class="kw">val</span> result = <span class="fu">exec</span>(allInOne)
 <span class="co">// result: Unit = ()</span></code></pre></div>
@@ -2521,14 +2522,14 @@ exec {
 <p>You can see that <code>onlyOne</code> takes an action as an argument, and that the action could return a sequence of results. The return from the method is an action that will return a single value.</p>
 <p>In the example data there is only one message that contains the word “Sorry”, so we expect <code>onlyOne</code> to return that row:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> happy = messages.<span class="fu">filter</span>(_.<span class="fu">content</span> like <span class="st">&quot;%sorry%&quot;</span>).<span class="fu">result</span>
-<span class="co">// happy: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@56d56004</span>
+<span class="co">// happy: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@6c357880</span>
 
 <span class="co">// We expect... </span>
 <span class="co">// exec(onlyOne(happy))</span>
 <span class="co">// ...to return a message.</span></code></pre></div>
 <p>However, there are two messages containing the word “I”. In this case <code>onlyOne</code> should fail:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> boom  = messages.<span class="fu">filter</span>(_.<span class="fu">content</span> like <span class="st">&quot;%I%&quot;</span>).<span class="fu">result</span>
-<span class="co">// boom: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@58b12e4e</span>
+<span class="co">// boom: slick.jdbc.H2Profile.StreamingProfileAction[Seq[MessageTable#TableElementType],MessageTable#TableElementType,slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@5e103aec</span>
 
 <span class="co">// If we run this...</span>
 <span class="co">// exec(onlyOne(boom))</span>
@@ -2686,7 +2687,7 @@ exec {
 <span class="co">// nextRoom: (roomName: String)slick.jdbc.H2Profile.api.DBIO[Option[String]]</span>
 
 <span class="kw">val</span> path: DBIO[Seq[String]] = <span class="fu">unfold</span>(<span class="st">&quot;Podbay&quot;</span>, nextRoom)
-<span class="co">// path: slick.jdbc.H2Profile.api.DBIO[Seq[String]] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@63e61130,$$Lambda$8495/1211584084@331a3eff,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// path: slick.jdbc.H2Profile.api.DBIO[Seq[String]] = FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@41f4b7c2,$$Lambda$8495/1617300735@361ecd25,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(path)
 <span class="co">// res49: Seq[String] = List(Podbay, Galley, Computer, Engine Room)</span></code></pre></div>
@@ -2774,7 +2775,7 @@ exec {
 <p>Here we factor out our <code>profile</code> dependency into its own <code>Profile</code> trait. Each module of database code specifies <code>Profile</code> as a self-type, meaning it can only be extended by a class that also extends <code>Profile</code>. This allows us to share the <code>profile</code> across our family of modules.</p>
 <p>To work with a different database, we inject a different profile when we instantiate the database code:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> anotherDatabaseLayer = <span class="kw">new</span> <span class="fu">DatabaseLayer</span>(slick.<span class="fu">jdbc</span>.<span class="fu">PostgresProfile</span>)
-<span class="co">// anotherDatabaseLayer: DatabaseLayer = DatabaseLayer@6ec051d4</span></code></pre></div>
+<span class="co">// anotherDatabaseLayer: DatabaseLayer = DatabaseLayer@69c10cfd</span></code></pre></div>
 <p>This basic pattern is reasonable way of structuring your application.</p>
 <!--
 ### Namespacing Queries
@@ -3031,7 +3032,7 @@ tuple._<span class="dv">1</span> <span class="co">// tuple field access</span>
         HNil
   rows &lt;- attributes.<span class="fu">filter</span>(_.<span class="fu">value1</span> === <span class="dv">1</span>).<span class="fu">result</span>
 } <span class="kw">yield</span> rows
-<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Seq[AttrHList]] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@5e4c11ff,$$Lambda$4794/214640745@b11e23f,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Seq[AttrHList]] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@3b26e90e,$$Lambda$4794/1796464042@4e2d9d4d,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="kw">val</span> myAttrs: AttrHList = <span class="fu">exec</span>(program).<span class="fu">head</span>
 <span class="co">// myAttrs: AttrHList = 1 :: 100 :: name1 :: 1 :: name2 :: 2 :: name3 :: 3 :: name4 :: 4 :: name5 :: 5 :: name6 :: 6 :: name7 :: 7 :: name8 :: 8 :: name9 :: 9 :: name10 :: 10 :: name11 :: 11 :: name12 :: 12 :: HNil</span></code></pre></div>
@@ -3082,7 +3083,7 @@ tuple._<span class="dv">1</span> <span class="co">// tuple field access</span>
   _    &lt;- attributes += <span class="fu">Attrs</span>(0L, 100L, <span class="st">&quot;n1&quot;</span>, <span class="dv">1</span>, <span class="st">&quot;n2&quot;</span>, <span class="dv">2</span> <span class="co">/* etc */</span>)
   rows &lt;- attributes.<span class="fu">filter</span>(_.<span class="fu">productId</span> === 100L).<span class="fu">result</span>
 } <span class="kw">yield</span> rows
-<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Seq[Attrs]] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@5bca0343,$$Lambda$5116/238286442@35250e24,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Seq[Attrs]] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@95b3139,$$Lambda$5116/479455698@2a24eef0,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(program)
 <span class="co">// res11: Seq[Attrs] = Vector(Attrs(1,100,n1,1,n2,2))</span></code></pre></div>
@@ -3120,7 +3121,7 @@ tuple._<span class="dv">1</span> <span class="co">// tuple field access</span>
   (users += <span class="fu">User</span>(<span class="st">&quot;Dave&quot;</span>, Some(<span class="st">&quot;dave@example.org&quot;</span>))) &gt;&gt;
   (users += <span class="fu">User</span>(<span class="st">&quot;HAL&quot;</span>))
 )
-<span class="co">// program: slick.dbio.DBIOAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@1f4ef176</span>
+<span class="co">// program: slick.dbio.DBIOAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = slick.dbio.SynchronousDatabaseAction$FusedAndThenAction@477d9116</span>
 
 <span class="fu">exec</span>(program)
 <span class="co">// res12: Int = 1</span></code></pre></div>
@@ -3280,7 +3281,7 @@ tuple._<span class="dv">1</span> <span class="co">// tuple field access</span>
   <span class="co">// Put Elena in the Room:</span>
   rowsAdded &lt;- occupants += <span class="fu">Occupant</span>(airLockId, elenaId)
 } <span class="kw">yield</span> rowsAdded
-<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@551c8e7,$$Lambda$5164/761280488@2a7b9685,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// program: slick.jdbc.H2Profile.api.DBIO[Int] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@1f0f7103,$$Lambda$5164/406297101@1fda0d88,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(program)
 <span class="co">// res16: Int = 1</span></code></pre></div>
@@ -3429,7 +3430,7 @@ tuple._<span class="dv">1</span> <span class="co">// tuple field access</span>
     <span class="fu">Message</span>(halId,  <span class="st">&quot;I'm sorry, Dave. I'm afraid I can't do that.&quot;</span>)
   )
 } <span class="kw">yield</span> rowsAdded
-<span class="co">// setup: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.All with slick.dbio.Effect.All with slick.dbio.Effect.Schema with slick.dbio.Effect.Write] = FlatMapAction(FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@327754db,$$Lambda$5233/570121910@4902a2cd,scala.concurrent.impl.ExecutionContextImpl@2276dcc7),$$Lambda$5234/1466439791@34128d87,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// setup: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.All with slick.dbio.Effect.All with slick.dbio.Effect.Schema with slick.dbio.Effect.Write] = FlatMapAction(FlatMapAction(slick.jdbc.StreamingInvokerAction$HeadOptionAction@377efeb2,$$Lambda$5233/1310172435@4432fa73,scala.concurrent.impl.ExecutionContextImpl@2d304788),$$Lambda$5234/1356538244@17952750,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(setup)
 <span class="co">// res20: Option[Int] = Some(4)</span></code></pre></div>
@@ -3563,13 +3564,13 @@ To pull data from across tables, use a query.
     <span class="st">&quot;Open the pod bay doors, HAL.&quot;</span>,
     DateTime.<span class="fu">now</span>)
 } <span class="kw">yield</span> msgId
-<span class="co">// program: slick.dbio.DBIOAction[insertMessage.SingleInsertResult,slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@12ded6b2,$$Lambda$5303/840443594@b6dc72f,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// program: slick.dbio.DBIOAction[insertMessage.SingleInsertResult,slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@7cb59774,$$Lambda$5303/337327883@34733257,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="kw">val</span> msgId = <span class="fu">exec</span>(program)
 <span class="co">// msgId: insertMessage.SingleInsertResult = 1</span></code></pre></div>
 <p>Fetching the database row will automatically convert the <code>timestamp</code> field into the <code>DateTime</code> value we expect:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(messages.<span class="fu">filter</span>(_.<span class="fu">id</span> === msgId).<span class="fu">result</span>)
-<span class="co">// res23: Seq[MessageTable#TableElementType] = Vector(Message(1,Open the pod bay doors, HAL.,2017-09-22T11:55:32.432Z,1))</span></code></pre></div>
+<span class="co">// res23: Seq[MessageTable#TableElementType] = Vector(Message(1,Open the pod bay doors, HAL.,2017-09-26T10:42:27.135Z,1))</span></code></pre></div>
 <p>This model of working with semantic types is immediately appealing to Scala developers. We strongly encourage you to use <code>ColumnType</code> in your applications, to help reduce bugs and let Slick take care of the type conversions.</p>
 <h3 id="value-classes"><span class="header-section-number">5.4.1</span> Value Classes</h3>
 <p>We are currently using <code>Long</code>s to model primary keys. Although this is a good choice at a database level, it’s not great for our application code.</p>
@@ -3643,7 +3644,7 @@ To pull data from across tables, use a query.
 <p>Notice how we’re able to be explicit: the <code>User.id</code> and <code>Message.senderId</code> are <code>UserPK</code>s, and the <code>Message.id</code> is a <code>MessagePK</code>.</p>
 <p>We can lookup values if we have the right kind of key:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">users.<span class="fu">filter</span>(_.<span class="fu">id</span> === <span class="fu">UserPK</span>(0L))
-<span class="co">// res24: slick.lifted.Query[UserTable,UserTable#TableElementType,Seq] = Rep(Filter @751422415)</span></code></pre></div>
+<span class="co">// res24: slick.lifted.Query[UserTable,UserTable#TableElementType,Seq] = Rep(Filter @1246696484)</span></code></pre></div>
 <p>…but if we accidentally try to mix our primary keys, we’ll find we cannot:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">users.<span class="fu">filter</span>(_.<span class="fu">id</span> === <span class="fu">MessagePK</span>(0L))
 <span class="co">// &lt;console&gt;:42: Error typechecking MappedTo expansion: class type required but Product with Serializable with slick.lifted.MappedTo[Long] with AnyVal found</span>
@@ -3861,7 +3862,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
 <div class="solution">
 <p>We get a runtime exception as we have violated referential integrity. There is no row in the <code>user</code> table with a primary id of <code>3000</code>.</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action = messages += <span class="fu">Message</span>(<span class="fu">UserPK</span>(3000L), <span class="st">&quot;Hello HAL!&quot;</span>)
-<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@5b65b5d4</span>
+<span class="co">// action: slick.sql.FixedSqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect.Write] = slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@2fdec437</span>
 
 <span class="fu">exec</span>(action.<span class="fu">asTry</span>)
 <span class="co">// res42: scala.util.Try[Int] =</span>
@@ -4107,7 +4108,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
   halId     &lt;- insertUser += <span class="fu">User</span>(<span class="st">&quot;HAL&quot;</span>)
   rowsAdded &lt;- messages ++= <span class="fu">freshTestData</span>(daveId, halId)
 } <span class="kw">yield</span> rowsAdded
-<span class="co">// setup: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@4a8b705a,$$Lambda$7076/1533205766@7cc1ee0,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// setup: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@3e542464,$$Lambda$7076/309216358@5e790abc,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(setup)
 <span class="co">// res1: Option[Int] = Some(4)</span></code></pre></div>
@@ -4174,7 +4175,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
 <span class="co">// q: slick.jdbc.H2Profile.api.Query[(MessageTable, UserTable),(Message, User),Seq] = Rep(Join Inner)</span></code></pre></div>
 <p>Joins like this form queries that we convert to actions the usual way:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Seq[(Message, User)]] = q.<span class="fu">result</span>
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(Message, User)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@6780fb7b</span>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(Message, User)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@71beaede</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res2: Seq[(Message, User)] = Vector((Message(1,Hello, HAL. Do you read me, HAL?,1),User(Dave,1)), (Message(2,Affirmative, Dave. I read you.,2),User(HAL,2)), (Message(1,Open the pod bay doors, HAL.,3),User(Dave,1)), (Message(2,I'm sorry, Dave. I'm afraid I can't do that.,4),User(HAL,2)))</span></code></pre></div>
@@ -4253,7 +4254,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
   <span class="co">// See what we end up with:</span>
   msgs &lt;- messages.<span class="fu">result</span>
 } <span class="kw">yield</span> (msgs)
-<span class="co">// setup: slick.dbio.DBIOAction[Seq[MessageTable#TableElementType],slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Read] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@272ebe5f,$$Lambda$7439/1213243306@34c81c9c,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// setup: slick.dbio.DBIOAction[Seq[MessageTable#TableElementType],slick.dbio.NoStream,slick.dbio.Effect.Schema with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Read] = FlatMapAction(slick.jdbc.JdbcActionComponent$SchemaActionExtensionMethodsImpl$$anon$5@5bac3f30,$$Lambda$7439/349580088@450ab33e,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(setup).<span class="fu">foreach</span>(println)
 <span class="co">// Message(1,Hello, HAL. Do you read me, HAL?,Some(1),1)</span>
@@ -4281,7 +4282,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
 <p>We can turn this query into an action as it stands:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Seq[((Message, User), Room)]] =
   usersAndRooms.<span class="fu">result</span>
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[((Message, User), Room)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@5cf8a0a7</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[((Message, User), Room)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@6d23a7a0</span></code></pre></div>
 <p>…but our results will contain nested tuples. That’s OK, if that’s what you want. But typically we want to <code>map</code> over the query to flatten the results and select the columns we want.</p>
 <p>Rather than returning the table classes, we can pick out just the information we want. Perhaps the message, the name of the sender, and the title of the room:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> usersAndRooms =
@@ -4292,7 +4293,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
 <span class="co">// usersAndRooms: slick.lifted.Query[(slick.lifted.Rep[String], slick.lifted.Rep[String], slick.lifted.Rep[String]),(String, String, String),Seq] = Rep(Bind)</span>
 
 <span class="kw">val</span> action: DBIO[Seq[(String, String, String)]] = usersAndRooms.<span class="fu">result</span>
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(String, String, String)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@77883dd4</span>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(String, String, String)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@2202530e</span>
 
 <span class="fu">exec</span>(action).<span class="fu">foreach</span>(println)
 <span class="co">// (Hello, HAL. Do you read me, HAL?,Dave,Air Lock)</span>
@@ -4311,7 +4312,7 @@ messages.<span class="fu">filter</span>(_.<span class="fu">isImportant</span>).<
 <span class="kw">val</span> airLockMsgs =
   usersAndRooms.
   filter { <span class="kw">case</span> (_, room) =&gt; room.<span class="fu">title</span> === <span class="st">&quot;Air Lock&quot;</span> }
-<span class="co">// airLockMsgs: slick.lifted.Query[((MessageTable, UserTable), RoomTable),((MessageTable#TableElementType, UserTable#TableElementType), RoomTable#TableElementType),Seq] = Rep(Filter @961971168)</span></code></pre></div>
+<span class="co">// airLockMsgs: slick.lifted.Query[((MessageTable, UserTable), RoomTable),((MessageTable#TableElementType, UserTable#TableElementType), RoomTable#TableElementType),Seq] = Rep(Filter @2012317087)</span></code></pre></div>
 <p>As with other queries, the filter becomes a <code>WHERE</code> clause in SQL. Something like this:</p>
 <div class="sourceCode"><pre class="sourceCode sql"><code class="sourceCode sql"><span class="kw">SELECT</span>
   <span class="ot">&quot;message&quot;</span>.<span class="ot">&quot;content&quot;</span>, <span class="ot">&quot;user&quot;</span>.<span class="ot">&quot;name&quot;</span>, <span class="ot">&quot;room&quot;</span>.<span class="ot">&quot;title&quot;</span>
@@ -4441,7 +4442,7 @@ xs zip xs.<span class="fu">drop</span>(<span class="dv">1</span>)
 
 <span class="kw">val</span> action: DBIO[Seq[(String, Long)]] =
   query.<span class="fu">result</span>
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(String, Long)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@43a6b47a</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[(String, Long)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@7021fe54</span></code></pre></div>
 <p>For H2 the SQL <code>ROWNUM()</code> function is used to generate a number. The data from this query will be:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(action).<span class="fu">foreach</span>(println)
 <span class="co">// (Hello, HAL. Do you read me, HAL?,0)</span>
@@ -4515,15 +4516,15 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
 </div>
 <p>Using them causes no great surprises, as shown in the following examples:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> numRows: DBIO[Int] = messages.<span class="fu">length</span>.<span class="fu">result</span>
-<span class="co">// numRows: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@1610842c</span>
+<span class="co">// numRows: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@3996e735</span>
 
 <span class="kw">val</span> numDifferentSenders: DBIO[Int] =
   messages.<span class="fu">map</span>(_.<span class="fu">senderId</span>).<span class="fu">distinct</span>.<span class="fu">length</span>.<span class="fu">result</span>
-<span class="co">// numDifferentSenders: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@22b59441</span>
+<span class="co">// numDifferentSenders: slick.jdbc.H2Profile.api.DBIO[Int] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@3a13bfa9</span>
 
 <span class="kw">val</span> firstSent: DBIO[Option[Long]] =
   messages.<span class="fu">map</span>(_.<span class="fu">id</span>).<span class="fu">min</span>.<span class="fu">result</span>
-<span class="co">// firstSent: slick.jdbc.H2Profile.api.DBIO[Option[Long]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@4553088e</span></code></pre></div>
+<span class="co">// firstSent: slick.jdbc.H2Profile.api.DBIO[Option[Long]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$3@39855df7</span></code></pre></div>
 <p>While <code>length</code> returns an <code>Int</code>, the other functions return an <code>Option</code>. This is because there may be no rows returned by the query, meaning the is no minimum, maximum and so on.</p>
 <h3 id="grouping"><span class="header-section-number">6.8.2</span> Grouping</h3>
 <p>Aggregate functions are often used with column grouping. For example, how many messages has each user sent? That’s a grouping (by user) of a aggregate (count).</p>
@@ -4533,7 +4534,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
   messages.<span class="fu">groupBy</span>(_.<span class="fu">senderId</span>).
   map { <span class="kw">case</span> (senderId, msgs) =&gt; senderId -&gt; msgs.<span class="fu">length</span> }.
   result
-<span class="co">// msgPerUser: slick.jdbc.H2Profile.api.DBIO[Seq[(Long, Int)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@1c2ca426</span></code></pre></div>
+<span class="co">// msgPerUser: slick.jdbc.H2Profile.api.DBIO[Seq[(Long, Int)]] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@35abc1ac</span></code></pre></div>
 <p>A <code>groupBy</code> must be followed by a <code>map</code>. The input to the <code>map</code> will be the grouping key (<code>senderId</code>) and a query for the group.</p>
 <p>When we run the query, it’ll work, but it will be in terms of a user’s primary key:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(msgPerUser)
@@ -4545,7 +4546,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
    groupBy { <span class="kw">case</span> (msg, user)   =&gt; user.<span class="fu">name</span> }.
    map     { <span class="kw">case</span> (name, group) =&gt; name -&gt; group.<span class="fu">length</span> }.
    result
-<span class="co">// msgsPerUser: slick.jdbc.H2Profile.StreamingProfileAction[Seq[(String, Int)],(String, Int),slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@70e3ef3a</span></code></pre></div>
+<span class="co">// msgsPerUser: slick.jdbc.H2Profile.StreamingProfileAction[Seq[(String, Int)],(String, Int),slick.dbio.Effect.Read] = slick.jdbc.JdbcActionComponent$QueryActionExtensionMethodsImpl$$anon$1@31c90df8</span></code></pre></div>
 <p>The results would be:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(msgsPerUser).<span class="fu">foreach</span>(println)
 <span class="co">// (HAL,2)</span>
@@ -4637,7 +4638,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
     <span class="fu">Message</span>(frankId, <span class="st">&quot;HELLO!?&quot;</span>,   Some(kitchenId))
   )
 } <span class="kw">yield</span> rowsAdded
-<span class="co">// addFrank: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@7932ffa1,$$Lambda$7707/929103555@2bd85639,scala.concurrent.impl.ExecutionContextImpl@2276dcc7)</span>
+<span class="co">// addFrank: slick.dbio.DBIOAction[Option[Int],slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Write with slick.dbio.Effect.Write] = FlatMapAction(slick.jdbc.JdbcActionComponent$InsertActionComposerImpl$SingleInsertAction@6a6ebe81,$$Lambda$7707/845139594@4d300bf,scala.concurrent.impl.ExecutionContextImpl@2d304788)</span>
 
 <span class="fu">exec</span>(addFrank)
 <span class="co">// res29: Option[Int] = Some(3)</span></code></pre></div>
@@ -4738,7 +4739,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
    groupBy { <span class="kw">case</span> (msg, user)  =&gt; user.<span class="fu">name</span> }.
    map     { <span class="kw">case</span> (name, group) =&gt; name -&gt; group.<span class="fu">length</span> }.
    filter  { <span class="kw">case</span> (name, count) =&gt; count &gt; <span class="dv">2</span> }
-<span class="co">// msgsPerUser: slick.lifted.Query[(slick.lifted.Rep[String], slick.lifted.Rep[Int]),(String, Int),Seq] = Rep(Filter @1905802122)</span></code></pre></div>
+<span class="co">// msgsPerUser: slick.lifted.Query[(slick.lifted.Rep[String], slick.lifted.Rep[Int]),(String, Int),Seq] = Rep(Filter @2026967271)</span></code></pre></div>
 <p>At this point in the book, only Frank has more than two messages:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(msgsPerUser.<span class="fu">result</span>)
 <span class="co">// res31: Seq[(String, Int)] = Vector((Frank,3))</span>
@@ -4827,7 +4828,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
   rooms.<span class="fu">schema</span>.<span class="fu">create</span>,
   rooms ++= Seq(<span class="fu">Room</span>(<span class="st">&quot;Air Lock&quot;</span>), <span class="fu">Room</span>(<span class="st">&quot;Pod&quot;</span>), <span class="fu">Room</span>(<span class="st">&quot;Brain Room&quot;</span>))
 )
-<span class="co">// roomSetup: slick.dbio.DBIOAction[Unit,slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Schema] = slick.dbio.DBIOAction$$anon$4@58fd1065</span>
+<span class="co">// roomSetup: slick.dbio.DBIOAction[Unit,slick.dbio.NoStream,slick.dbio.Effect.Write with slick.dbio.Effect.Schema] = slick.dbio.DBIOAction$$anon$4@6ec186cb</span>
 
 <span class="kw">val</span> setupResult = <span class="fu">exec</span>(roomSetup)
 <span class="co">// setupResult: Unit = ()</span></code></pre></div>
@@ -4835,7 +4836,7 @@ slick.<span class="fu">jdbc</span>.<span class="fu">SQLiteProfile</span>.<span c
 <h2 id="selects"><span class="header-section-number">7.1</span> Selects</h2>
 <p>Let’s start with a simple example of returning a list of room IDs.</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action = sql<span class="st">&quot;&quot;&quot; select &quot;</span>id<span class="st">&quot; from &quot;</span>room<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[Long]
-<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@3f4394eb</span>
+<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@5dd2d9e7</span>
 
 Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <span class="fl">2.</span>seconds)
 <span class="co">// res0: Vector[Long] = Vector(1, 2, 3)</span></code></pre></div>
@@ -4843,7 +4844,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <p>The big difference is with the construction of the query. We supply both the SQL we want to run and specify the expected result type using <code>as[T]</code>. And the result we get back is an action to run, rather than a <code>Query</code>.</p>
 <p>The <code>as[T]</code> method is pretty flexible. Let’s get back the room ID and room title:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> roomInfo = sql<span class="st">&quot;&quot;&quot; select &quot;</span>id<span class="st">&quot;, &quot;</span>title<span class="st">&quot; from &quot;</span>room<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[(Long,String)]
-<span class="co">// roomInfo: slick.sql.SqlStreamingAction[Vector[(Long, String)],(Long, String),slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@73809f9</span>
+<span class="co">// roomInfo: slick.sql.SqlStreamingAction[Vector[(Long, String)],(Long, String),slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@1db13b08</span>
 
 <span class="fu">exec</span>(roomInfo)
 <span class="co">// res1: Vector[(Long, String)] = Vector((1,Air Lock), (2,Pod), (3,Brain Room))</span></code></pre></div>
@@ -4860,7 +4861,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
     <span class="st">&quot;room&quot;</span>
   where
     <span class="st">&quot;title&quot;</span> = $roomName <span class="st">&quot;&quot;&quot;.as[(Long,String)].headOption</span>
-<span class="co">// podRoomAction: slick.sql.SqlStreamingAction[Vector[(Long, String)],(Long, String),slick.dbio.Effect]#ResultAction[Option[(Long, String)],slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadOptionAction@96a6af6</span>
+<span class="co">// podRoomAction: slick.sql.SqlStreamingAction[Vector[(Long, String)],(Long, String),slick.dbio.Effect]#ResultAction[Option[(Long, String)],slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadOptionAction@31c50e49</span>
 
 <span class="fu">exec</span>(podRoomAction)
 <span class="co">// res2: Option[(Long, String)] = Some((2,Pod))</span></code></pre></div>
@@ -4873,7 +4874,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 
 <span class="kw">val</span> badAction =
   sql<span class="st">&quot;&quot;&quot; select &quot;</span>id<span class="st">&quot; from &quot;</span>room<span class="st">&quot; where &quot;</span>title<span class="st">&quot; = $t &quot;&quot;&quot;</span>.<span class="fu">as</span>[Long]
-<span class="co">// badAction: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@7d624fbb</span></code></pre></div>
+<span class="co">// badAction: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@69d0e784</span></code></pre></div>
 <p>This compiles, but fails at runtime as the type of the <code>title</code> column is a <code>String</code> and we’ve provided an <code>Int</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="fu">exec</span>(badAction.<span class="fu">asTry</span>)
 <span class="co">// res3: scala.util.Try[Vector[Long]] =</span>
@@ -4885,7 +4886,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <span class="co">// table: String = room</span>
 
 <span class="kw">val</span> action = sql<span class="st">&quot;&quot;&quot; select &quot;</span>id<span class="st">&quot; from &quot;</span>#$table<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[Long]
-<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@599fe506</span></code></pre></div>
+<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@66ddbfc0</span></code></pre></div>
 <p>In this situation we do not want the value of <code>table</code> to be treated as a <code>String</code>. If we did, it’d be an invalid query: <code>select &quot;id&quot; from &quot;'message'&quot;</code> (notice the double quotes and single quotes around the table name, which is not valid SQL).</p>
 <p>This means you can produce unsafe SQL with splicing. The golden rule is to never use <code>#$</code> with input supplied by users.</p>
 <p>To be sure you remember it, say it again with us: never use <code>#$</code> with input supplied by users.</p>
@@ -4922,7 +4923,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <p>The name of this value doesn’t matter. What’s important is that the value is implicit and the type is <code>GetResult[DateTime]</code>. This allows the compiler to lookup our conversion function when we mention a <code>DateTime</code>.</p>
 <p>Now we can construct our action:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">sql<span class="st">&quot;&quot;&quot; select &quot;</span>created<span class="st">&quot; from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[DateTime]
-<span class="co">// res5: slick.sql.SqlStreamingAction[Vector[org.joda.time.DateTime],org.joda.time.DateTime,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@1b3d4151</span></code></pre></div>
+<span class="co">// res5: slick.sql.SqlStreamingAction[Vector[org.joda.time.DateTime],org.joda.time.DateTime,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@5848431b</span></code></pre></div>
 <h3 id="case-classes"><span class="header-section-number">7.1.2</span> Case Classes</h3>
 <p>As you’ve probably guessed, returning a case class from a Plain SQL query means providing a <code>GetResult</code> for the case class. Let’s work through an example for the messages table.</p>
 <p>Recall that a message contains: an ID, some content, the sender ID, a timestamp, and an optional timestamp.</p>
@@ -4950,7 +4951,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <p>Now we can select into <code>Message</code> values:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action: DBIO[Seq[Message]] =
   sql<span class="st">&quot;&quot;&quot; select * from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[Message]
-<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.jdbc.SQLActionBuilder$$anon$1@68bee1a2</span></code></pre></div>
+<span class="co">// action: slick.jdbc.H2Profile.api.DBIO[Seq[Message]] = slick.jdbc.SQLActionBuilder$$anon$1@537ac83f</span></code></pre></div>
 <p>In all likelihood you’ll prefer the lifted embedded style over Plain SQL in this specific example. But if you do find yourself using Plain SQL, for performance reasons perhaps, it’s useful to know how to convert database values up into meaningful domain types.</p>
 <div class="callout callout-warning">
 <p><strong><code>SELECT *</code></strong></p>
@@ -4963,7 +4964,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <p>Plain SQL updates will allow us to do this. The interpolator is <code>sqlu</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action =
   sqlu<span class="st">&quot;&quot;&quot;UPDATE &quot;</span>message<span class="st">&quot; SET &quot;</span>content<span class="st">&quot; = CONCAT(&quot;</span>content<span class="st">&quot;, '!')&quot;&quot;&quot;</span>
-<span class="co">// action: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@1fa22bc9</span></code></pre></div>
+<span class="co">// action: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@2aa8c153</span></code></pre></div>
 <p>The <code>action</code> we have constructed, just like other actions, is not run until we evaluate it via <code>db.run</code>. But when it is run, it will append the exclamation mark to each row value, which is what we couldn’t do as efficiently with the lifted embedded style.</p>
 <p>Just like the <code>sql</code> interpolator, we also have access to <code>$</code> for binding to variables:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> <span class="dt">char</span> = <span class="st">&quot;!&quot;</span>
@@ -4971,7 +4972,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 
 <span class="kw">val</span> action =
   sqlu<span class="st">&quot;&quot;&quot;UPDATE &quot;</span>message<span class="st">&quot; SET &quot;</span>content<span class="st">&quot; = CONCAT(&quot;</span>content<span class="st">&quot;, $char)&quot;&quot;&quot;</span>
-<span class="co">// action: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@416c3e60</span></code></pre></div>
+<span class="co">// action: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@2f5b5797</span></code></pre></div>
 <p>This gives us two benefits: the compiler will point out typos in variables names, but also the input is sanitized against <a href="https://en.wikipedia.org/wiki/SQL_injection">SQL injection attacks</a>.</p>
 <p>In this case, the statement that Slick generates will be:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">action.<span class="fu">statements</span>.<span class="fu">head</span>
@@ -4995,7 +4996,7 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <p>With this in place we can construct Plain SQL updates using <code>DateTime</code> instances:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> now =
   sqlu<span class="st">&quot;&quot;&quot;UPDATE &quot;</span>message<span class="st">&quot; SET &quot;</span>created<span class="st">&quot; = ${DateTime.now}&quot;&quot;&quot;</span>
-<span class="co">// now: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@74a2ebfc</span></code></pre></div>
+<span class="co">// now: slick.sql.SqlAction[Int,slick.dbio.NoStream,slick.dbio.Effect] = slick.jdbc.StreamingInvokerAction$HeadAction@247a6c19</span></code></pre></div>
 <p>Without the <code>SetParameter[DateTime]</code> instance the compiler would tell you:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">could not find <span class="kw">implicit</span> SetParameter[DateTime]</code></pre></div>
 <h2 id="typed-checked-plain-sql"><span class="header-section-number">7.3</span> Typed Checked Plain SQL</h2>
@@ -5136,13 +5137,13 @@ Await.<span class="fu">result</span>(db.<span class="fu">run</span>(action), <sp
 <div class="solution">
 <p>The SQL statements are relatively simple. You need to take care to make the <code>as[T]</code> align to the result of the query.</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> q1 = sql<span class="st">&quot;&quot;&quot; select count(*) from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[Int]
-<span class="co">// q1: slick.sql.SqlStreamingAction[Vector[Int],Int,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@1904e10d</span>
+<span class="co">// q1: slick.sql.SqlStreamingAction[Vector[Int],Int,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@23ca785a</span>
 
 <span class="kw">val</span> a1 = <span class="fu">exec</span>(q1)
 <span class="co">// a1: Vector[Int] = Vector(4)</span>
 
 <span class="kw">val</span> q2 = sql<span class="st">&quot;&quot;&quot; select &quot;</span>content<span class="st">&quot; from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[String]
-<span class="co">// q2: slick.sql.SqlStreamingAction[Vector[String],String,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@38eedc0f</span>
+<span class="co">// q2: slick.sql.SqlStreamingAction[Vector[String],String,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@56376f7</span>
 
 <span class="kw">val</span> a2 = <span class="fu">exec</span>(q2)
 <span class="co">// a2: Vector[String] = Vector(Hello, HAL. Do you read me, HAL?, Affirmative, Dave. I read you., Open the pod bay doors, HAL., I'm sorry, Dave. I'm afraid I can't do that.)</span>
@@ -5154,13 +5155,13 @@ a2.<span class="fu">foreach</span>(println)
 <span class="co">// I'm sorry, Dave. I'm afraid I can't do that.</span>
 
 <span class="kw">val</span> q3 = sql<span class="st">&quot;&quot;&quot; select length(&quot;</span>content<span class="st">&quot;) from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[Int]
-<span class="co">// q3: slick.sql.SqlStreamingAction[Vector[Int],Int,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@76fc3455</span>
+<span class="co">// q3: slick.sql.SqlStreamingAction[Vector[Int],Int,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@35209fd0</span>
 
 <span class="kw">val</span> a3 = <span class="fu">exec</span>(q3)
 <span class="co">// a3: Vector[Int] = Vector(32, 30, 28, 44)</span>
 
 <span class="kw">val</span> q4 = sql<span class="st">&quot;&quot;&quot; select &quot;</span>content<span class="st">&quot;, length(&quot;</span>content<span class="st">&quot;) from &quot;</span>message<span class="st">&quot; &quot;&quot;&quot;</span>.<span class="fu">as</span>[(String,Int)]
-<span class="co">// q4: slick.sql.SqlStreamingAction[Vector[(String, Int)],(String, Int),slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@1c6e7e71</span>
+<span class="co">// q4: slick.sql.SqlStreamingAction[Vector[(String, Int)],(String, Int),slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@399e71ba</span>
 
 <span class="kw">val</span> a4 = <span class="fu">exec</span>(q4)
 <span class="co">// a4: Vector[(String, Int)] = Vector((Hello, HAL. Do you read me, HAL?,32), (Affirmative, Dave. I read you.,30), (Open the pod bay doors, HAL.,28), (I'm sorry, Dave. I'm afraid I can't do that.,44))</span>
@@ -5198,7 +5199,7 @@ a4.<span class="fu">foreach</span>(println)
   where
     m.<span class="st">&quot;content&quot;</span> = 'Open the pod bay doors, HAL.'
   <span class="st">&quot;&quot;&quot;.as[String]</span>
-<span class="co">// whoSaidThat: slick.sql.SqlStreamingAction[Vector[String],String,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@30460833</span>
+<span class="co">// whoSaidThat: slick.sql.SqlStreamingAction[Vector[String],String,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@5b81efa</span>
 
 <span class="fu">exec</span>(whoSaidThat)
 <span class="co">// res21: Vector[String] = Vector(Dave)</span></code></pre></div>
@@ -5254,7 +5255,7 @@ a4.<span class="fu">foreach</span>(println)
 
 <span class="kw">val</span> query =  sql<span class="st">&quot;&quot;&quot; select min(&quot;</span>content<span class="st">&quot;), max(&quot;</span>content<span class="st">&quot;)</span>
                     from <span class="st">&quot;message&quot;</span> <span class="st">&quot;&quot;&quot;.as[FirstAndLast]</span>
-<span class="co">// query: slick.sql.SqlStreamingAction[Vector[FirstAndLast],FirstAndLast,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@61dcec2d</span>
+<span class="co">// query: slick.sql.SqlStreamingAction[Vector[FirstAndLast],FirstAndLast,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@4b4e4693</span>
 
 <span class="fu">exec</span>(query)
 <span class="co">// res25: Vector[FirstAndLast] = Vector(FirstAndLast(Affirmative, Dave. I read you.,Open the pod bay doors, HAL.))</span></code></pre></div>
@@ -5288,7 +5289,7 @@ a4.<span class="fu">foreach</span>(println)
 <p>If you are familiar with <a href="http://xkcd.com/327/">xkcd’s Little Bobby Tables</a>, the title of the exercise has probably tipped you off: <code>#$</code> does not escape input.</p>
 <p>This means a user could use a carefully crafted email address to do evil:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> action = <span class="fu">lookup</span>(<span class="st">&quot;&quot;&quot;';DROP TABLE &quot;</span>user<span class="st">&quot;;--- &quot;&quot;&quot;</span>).<span class="fu">as</span>[Long]
-<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@31c5b35e</span>
+<span class="co">// action: slick.sql.SqlStreamingAction[Vector[Long],Long,slick.dbio.Effect] = slick.jdbc.SQLActionBuilder$$anon$1@d9f5bbc</span>
 
 <span class="fu">exec</span>(action)
 <span class="co">// res31: Vector[Long] = Vector()</span></code></pre></div>
