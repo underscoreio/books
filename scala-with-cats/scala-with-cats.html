@@ -488,7 +488,7 @@ Json.<span class="fu">toJson</span>(<span class="fu">Person</span>(<span class="
 <span class="co">// import JsonWriterInstances._</span>
 
 implicitly[JsonWriter[String]]
-<span class="co">// res8: JsonWriter[String] = JsonWriterInstances$$anon$1@a5a4735</span></code></pre></div>
+<span class="co">// res8: JsonWriter[String] = JsonWriterInstances$$anon$1@3bf1f90e</span></code></pre></div>
 <p>Most type classes in Cats provide other means to summon instances. However, <code>implicitly</code> is a good fallback for debugging purposes. We can insert a call to <code>implicitly</code> within the general flow of our code to ensure the compiler can find an instance of a type class and ensure that there are no ambiguous implicit errors.</p>
 <h2 id="working-with-implicits"><span class="header-section-number">1.2</span> Working with Implicits</h2>
 <p>Working with type classes in Scala means working with implicit values and implicit parameters. There are a few rules we need to know to do this effectively.</p>
@@ -1602,7 +1602,7 @@ math.<span class="fu">abs</span>(x) <span class="co">// value, produced using a 
 <span class="co">// func: Int =&gt; Int = &lt;function1&gt;</span>
 
 <span class="kw">val</span> liftedFunc = Functor[Option].<span class="fu">lift</span>(func)
-<span class="co">// liftedFunc: Option[Int] =&gt; Option[Int] = cats.Functor$$Lambda$11699/1322391447@434fec26</span>
+<span class="co">// liftedFunc: Option[Int] =&gt; Option[Int] = cats.Functor$$Lambda$11699/710248259@44050014</span>
 
 <span class="fu">liftedFunc</span>(Option(<span class="dv">1</span>))
 <span class="co">// res0: Option[Int] = Some(2)</span></code></pre></div>
@@ -1974,7 +1974,7 @@ Monoid[Symbol].<span class="fu">empty</span>
 <span class="kw">val</span> func2 = (y: Double) =&gt; y * <span class="dv">2</span>
 
 <span class="kw">val</span> func3 = func1.<span class="fu">map</span>(func2)
-<span class="co">// func3: Int =&gt; Double = scala.runtime.AbstractFunction1$$Lambda$7405/657351063@62962ee3</span></code></pre></div>
+<span class="co">// func3: Int =&gt; Double = scala.runtime.AbstractFunction1$$Lambda$7405/1287768047@20599787</span></code></pre></div>
 <p>but failed if the flag was missing:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> func3 = func1.<span class="fu">map</span>(func2)
 <span class="co">// &lt;console&gt;: error: value map is not a member of Int =&gt; Double</span>
@@ -2042,7 +2042,7 @@ either.<span class="fu">map</span>(_ + <span class="dv">1</span>)
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> func2b: Double &lt;= Double = func2
 
 <span class="kw">val</span> func3c = func2b.<span class="fu">contramap</span>(func1)
-<span class="co">// func3c: Double &lt;= Int = scala.runtime.AbstractFunction1$$Lambda$7405/657351063@6bbf5987</span></code></pre></div>
+<span class="co">// func3c: Double &lt;= Int = scala.runtime.AbstractFunction1$$Lambda$7405/1287768047@6664786e</span></code></pre></div>
 <p>The difference between <code>func2</code> and <code>func2b</code> is purely syntactic—both refer to the same value and the type aliases are otherwise completely compatible. Incredibly, however, this simple rephrasing is enough to give the compiler the hint it needs to solve the problem.</p>
 <p>It is rare that we have to do this kind of right-to-left elimination. Most multi-parameter type constructors are designed to be right-biased, requiring the left-to-right elimination that is supported by the compiler out of the box. However, it is useful to know about <code>-Ypartial-unification</code> and this quirk of elimination order in case you ever come across an odd scenario like the one above.</p>
 <h2 id="summary-2"><span class="header-section-number">3.9</span> Summary</h2>
@@ -2280,7 +2280,7 @@ Monad[Vector].<span class="fu">flatMap</span>(Vector(<span class="dv">1</span>, 
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> scala.<span class="fu">concurrent</span>.<span class="fu">ExecutionContext</span>.<span class="fu">Implicits</span>.<span class="fu">global</span>
 
 <span class="kw">val</span> fm = Monad[Future]
-<span class="co">// fm: cats.Monad[scala.concurrent.Future] = cats.instances.FutureInstances$$anon$1@7260f52d</span></code></pre></div>
+<span class="co">// fm: cats.Monad[scala.concurrent.Future] = cats.instances.FutureInstances$$anon$1@58e7cab5</span></code></pre></div>
 <p>The <code>Monad</code> instance uses the captured <code>ExecutionContext</code> for subsequent calls to <code>pure</code> and <code>flatMap</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> future = fm.<span class="fu">flatMap</span>(fm.<span class="fu">pure</span>(<span class="dv">1</span>))(x =&gt; fm.<span class="fu">pure</span>(x + <span class="dv">2</span>))
 
@@ -2724,13 +2724,13 @@ exn.<span class="fu">raiseError</span>[Try, Int]
   math.<span class="fu">random</span>
 }
 <span class="co">// Computing X</span>
-<span class="co">// x: Double = 0.052234880483295054</span>
+<span class="co">// x: Double = 0.26648326837926906</span>
 
 x <span class="co">// first access</span>
-<span class="co">// res0: Double = 0.052234880483295054</span>
+<span class="co">// res0: Double = 0.26648326837926906</span>
 
 x <span class="co">// second access</span>
-<span class="co">// res1: Double = 0.052234880483295054</span></code></pre></div>
+<span class="co">// res1: Double = 0.26648326837926906</span></code></pre></div>
 <p>By contrast, <code>defs</code> are lazy and not memoized. The code to compute <code>y</code> below is not run until we access it (lazy), and is re-run on every access (not memoized):</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">def</span> y = {
   <span class="fu">println</span>(<span class="st">&quot;Computing Y&quot;</span>)
@@ -2740,11 +2740,11 @@ x <span class="co">// second access</span>
 
 y <span class="co">// first access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res2: Double = 0.39447833704011936</span>
+<span class="co">// res2: Double = 0.2837107363707603</span>
 
 y <span class="co">// second access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res3: Double = 0.7866745482741204</span></code></pre></div>
+<span class="co">// res3: Double = 0.4082643085914305</span></code></pre></div>
 <p>Last but not least, <code>lazy vals</code> are lazy and memoized. The code to compute <code>z</code> below is not run until we access it for the first time (lazy). The result is then cached and re-used on subsequent accesses (memoized):</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">lazy</span> <span class="kw">val</span> z = {
   <span class="fu">println</span>(<span class="st">&quot;Computing Z&quot;</span>)
@@ -2754,71 +2754,71 @@ y <span class="co">// second access</span>
 
 z <span class="co">// first access</span>
 <span class="co">// Computing Z</span>
-<span class="co">// res4: Double = 0.7968307517962487</span>
+<span class="co">// res4: Double = 0.1983131977804491</span>
 
 z <span class="co">// second access</span>
-<span class="co">// res5: Double = 0.7968307517962487</span></code></pre></div>
+<span class="co">// res5: Double = 0.1983131977804491</span></code></pre></div>
 <h3 id="evals-models-of-evaluation"><span class="header-section-number">4.6.2</span> Eval’s Models of Evaluation</h3>
 <p><code>Eval</code> has three subtypes: <code>Now</code>, <code>Later</code>, and <code>Always</code>. We construct these with three constructor methods, which create instances of the three classes and return them typed as <code>Eval</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">Eval</span>
 
 <span class="kw">val</span> now = Eval.<span class="fu">now</span>(math.<span class="fu">random</span> + <span class="dv">1000</span>)
-<span class="co">// now: cats.Eval[Double] = Now(1000.0817186632896)</span>
+<span class="co">// now: cats.Eval[Double] = Now(1000.3183698962193)</span>
 
 <span class="kw">val</span> later = Eval.<span class="fu">later</span>(math.<span class="fu">random</span> + <span class="dv">2000</span>)
-<span class="co">// later: cats.Eval[Double] = cats.Later@32220dad</span>
+<span class="co">// later: cats.Eval[Double] = cats.Later@49a5f28</span>
 
 <span class="kw">val</span> always = Eval.<span class="fu">always</span>(math.<span class="fu">random</span> + <span class="dv">3000</span>)
-<span class="co">// always: cats.Eval[Double] = cats.Always@7553edc9</span></code></pre></div>
+<span class="co">// always: cats.Eval[Double] = cats.Always@4feaa109</span></code></pre></div>
 <p>We can extract the result of an <code>Eval</code> using its <code>value</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">now.<span class="fu">value</span>
-<span class="co">// res6: Double = 1000.0817186632896</span>
+<span class="co">// res6: Double = 1000.3183698962193</span>
 
 later.<span class="fu">value</span>
-<span class="co">// res7: Double = 2000.1022380188942</span>
+<span class="co">// res7: Double = 2000.9293477851204</span>
 
 always.<span class="fu">value</span>
-<span class="co">// res8: Double = 3000.847843724602</span></code></pre></div>
+<span class="co">// res8: Double = 3000.7189297338778</span></code></pre></div>
 <p>Each type of <code>Eval</code> calculates its result using one of the evaluation models defined above. <code>Eval.now</code> captures a value <em>right now</em>. Its semantics are similar to a <code>val</code>—eager and memoized:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> x = Eval.<span class="fu">now</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing X&quot;</span>)
   math.<span class="fu">random</span>
 }
 <span class="co">// Computing X</span>
-<span class="co">// x: cats.Eval[Double] = Now(0.5022863539320059)</span>
+<span class="co">// x: cats.Eval[Double] = Now(0.09045969742710758)</span>
 
 x.<span class="fu">value</span> <span class="co">// first access</span>
-<span class="co">// res9: Double = 0.5022863539320059</span>
+<span class="co">// res9: Double = 0.09045969742710758</span>
 
 x.<span class="fu">value</span> <span class="co">// second access</span>
-<span class="co">// res10: Double = 0.5022863539320059</span></code></pre></div>
+<span class="co">// res10: Double = 0.09045969742710758</span></code></pre></div>
 <p><code>Eval.always</code> captures a lazy computation, similar to a <code>def</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> y = Eval.<span class="fu">always</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing Y&quot;</span>)
   math.<span class="fu">random</span>
 }
-<span class="co">// y: cats.Eval[Double] = cats.Always@2c3036ef</span>
+<span class="co">// y: cats.Eval[Double] = cats.Always@562eb8cd</span>
 
 y.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res11: Double = 0.05448346176303287</span>
+<span class="co">// res11: Double = 0.21332544241439044</span>
 
 y.<span class="fu">value</span> <span class="co">// second access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res12: Double = 0.6808819840593255</span></code></pre></div>
+<span class="co">// res12: Double = 0.48223309470957254</span></code></pre></div>
 <p>Finally, <code>Eval.later</code> captures a lazy, memoized computation, similar to a <code>lazy val</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> z = Eval.<span class="fu">later</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing Z&quot;</span>)
   math.<span class="fu">random</span>
 }
-<span class="co">// z: cats.Eval[Double] = cats.Later@19401791</span>
+<span class="co">// z: cats.Eval[Double] = cats.Later@25abaa0</span>
 
 z.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Computing Z</span>
-<span class="co">// res13: Double = 0.6447165377818216</span>
+<span class="co">// res13: Double = 0.5629924729783639</span>
 
 z.<span class="fu">value</span> <span class="co">// second access</span>
-<span class="co">// res14: Double = 0.6447165377818216</span></code></pre></div>
+<span class="co">// res14: Double = 0.5629924729783639</span></code></pre></div>
 <p>The three behaviours are summarized below:</p>
 <div class="table-responsive">
 <table style="width:99%;">
@@ -2858,7 +2858,7 @@ z.<span class="fu">value</span> <span class="co">// second access</span>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> greeting = Eval.
   always { <span class="fu">println</span>(<span class="st">&quot;Step 1&quot;</span>); <span class="st">&quot;Hello&quot;</span> }.
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 2&quot;</span>); s<span class="st">&quot;$str world&quot;</span> }
-<span class="co">// greeting: cats.Eval[String] = cats.Eval$$anon$8@28a6b457</span>
+<span class="co">// greeting: cats.Eval[String] = cats.Eval$$anon$8@423c86d1</span>
 
 greeting.<span class="fu">value</span>
 <span class="co">// Step 1</span>
@@ -2873,7 +2873,7 @@ greeting.<span class="fu">value</span>
   a + b
 }
 <span class="co">// Calculating A</span>
-<span class="co">// ans: cats.Eval[Int] = cats.Eval$$anon$8@60912c39</span>
+<span class="co">// ans: cats.Eval[Int] = cats.Eval$$anon$8@4f5486a7</span>
 
 ans.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Calculating B</span>
@@ -2890,7 +2890,7 @@ ans.<span class="fu">value</span> <span class="co">// second access</span>
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 2&quot;</span>); s<span class="st">&quot;$str sat on&quot;</span> }.
   memoize.
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 3&quot;</span>); s<span class="st">&quot;$str the mat&quot;</span> }
-<span class="co">// saying: cats.Eval[String] = cats.Eval$$anon$8@5f536841</span>
+<span class="co">// saying: cats.Eval[String] = cats.Eval$$anon$8@2ecdf7d6</span>
 
 saying.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Step 1</span>
@@ -3285,7 +3285,7 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
 <span class="kw">val</span> a = State[Int, String] { state =&gt;
   (state, s<span class="st">&quot;The state is $state&quot;</span>)
 }
-<span class="co">// a: cats.data.State[Int,String] = cats.data.IndexedStateT@54401d89</span></code></pre></div>
+<span class="co">// a: cats.data.State[Int,String] = cats.data.IndexedStateT@28863e2b</span></code></pre></div>
 <p>In other words, an instance of <code>State</code> is a function that does two things:</p>
 <ul>
 <li>transforms an input state to an output state;</li>
@@ -3310,19 +3310,19 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
   <span class="kw">val</span> ans = num + <span class="dv">1</span>
   (ans, s<span class="st">&quot;Result of step1: $ans&quot;</span>)
 }
-<span class="co">// step1: cats.data.State[Int,String] = cats.data.IndexedStateT@4985a202</span>
+<span class="co">// step1: cats.data.State[Int,String] = cats.data.IndexedStateT@130f8081</span>
 
 <span class="kw">val</span> step2 = State[Int, String] { num =&gt;
   <span class="kw">val</span> ans = num * <span class="dv">2</span>
   (ans, s<span class="st">&quot;Result of step2: $ans&quot;</span>)
 }
-<span class="co">// step2: cats.data.State[Int,String] = cats.data.IndexedStateT@29f286da</span>
+<span class="co">// step2: cats.data.State[Int,String] = cats.data.IndexedStateT@786f613</span>
 
 <span class="kw">val</span> both = <span class="kw">for</span> {
   a &lt;- step1
   b &lt;- step2
 } <span class="kw">yield</span> (a, b)
-<span class="co">// both: cats.data.IndexedStateT[cats.Eval,Int,Int,(String, String)] = cats.data.IndexedStateT@5458eb96</span>
+<span class="co">// both: cats.data.IndexedStateT[cats.Eval,Int,Int,(String, String)] = cats.data.IndexedStateT@172614ee</span>
 
 <span class="kw">val</span> (state, result) = both.<span class="fu">run</span>(<span class="dv">20</span>).<span class="fu">value</span>
 <span class="co">// state: Int = 42</span>
@@ -3337,31 +3337,31 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
 <li><code>modify</code> updates the state using an update function.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> getDemo = State.<span class="fu">get</span>[Int]
-<span class="co">// getDemo: cats.data.State[Int,Int] = cats.data.IndexedStateT@66524092</span>
+<span class="co">// getDemo: cats.data.State[Int,Int] = cats.data.IndexedStateT@6be487e1</span>
 
 getDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res3: (Int, Int) = (10,10)</span>
 
 <span class="kw">val</span> setDemo = State.<span class="fu">set</span>[Int](<span class="dv">30</span>)
-<span class="co">// setDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@56d1d3b3</span>
+<span class="co">// setDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@56a6585c</span>
 
 setDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res4: (Int, Unit) = (30,())</span>
 
 <span class="kw">val</span> pureDemo = State.<span class="fu">pure</span>[Int, String](<span class="st">&quot;Result&quot;</span>)
-<span class="co">// pureDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@b519022</span>
+<span class="co">// pureDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@719af2ac</span>
 
 pureDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res5: (Int, String) = (10,Result)</span>
 
 <span class="kw">val</span> inspectDemo = State.<span class="fu">inspect</span>[Int, String](_ + <span class="st">&quot;!&quot;</span>)
-<span class="co">// inspectDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@524239d7</span>
+<span class="co">// inspectDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@56191e75</span>
 
 inspectDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res6: (Int, String) = (10,10!)</span>
 
 <span class="kw">val</span> modifyDemo = State.<span class="fu">modify</span>[Int](_ + <span class="dv">1</span>)
-<span class="co">// modifyDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@3ef69105</span>
+<span class="co">// modifyDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@3ad104af</span>
 
 modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res7: (Int, Unit) = (11,())</span></code></pre></div>
@@ -3375,7 +3375,7 @@ modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="
   _ &lt;- modify[Int](_ + <span class="dv">1</span>)
   c &lt;- inspect[Int, Int](_ * <span class="dv">1000</span>)
 } <span class="kw">yield</span> (a, b, c)
-<span class="co">// program: cats.data.State[Int,(Int, Int, Int)] = cats.data.IndexedStateT@2423cd92</span>
+<span class="co">// program: cats.data.State[Int,(Int, Int, Int)] = cats.data.IndexedStateT@4fcdefca</span>
 
 <span class="kw">val</span> (state, result) = program.<span class="fu">run</span>(<span class="dv">1</span>).<span class="fu">value</span>
 <span class="co">// state: Int = 3</span>
@@ -3447,7 +3447,7 @@ modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="
   _   &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;2&quot;</span>)
   ans &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;+&quot;</span>)
 } <span class="kw">yield</span> ans
-<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@7202c139</span>
+<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@25820015</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res4: Int = 3</span></code></pre></div>
@@ -3465,7 +3465,7 @@ program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 </div>
 <p>We can use <code>evalAll</code> to conveniently evaluate multi-stage expressions:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> program = <span class="fu">evalAll</span>(List(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;+&quot;</span>, <span class="st">&quot;3&quot;</span>, <span class="st">&quot;*&quot;</span>))
-<span class="co">// program: CalcState[Int] = cats.data.IndexedStateT@ca2dcc8</span>
+<span class="co">// program: CalcState[Int] = cats.data.IndexedStateT@1f7a6d1b</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res6: Int = 9</span></code></pre></div>
@@ -3475,7 +3475,7 @@ program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
   _   &lt;- <span class="fu">evalAll</span>(List(<span class="st">&quot;3&quot;</span>, <span class="st">&quot;4&quot;</span>, <span class="st">&quot;+&quot;</span>))
   ans &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;*&quot;</span>)
 } <span class="kw">yield</span> ans
-<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@3d2823f9</span>
+<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@1eb1e709</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res7: Int = 21</span></code></pre></div>
@@ -4247,7 +4247,7 @@ Validated.<span class="fu">fromOption</span>[String, Int](None, <span class="st"
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">instances</span>.<span class="fu">string</span>._ <span class="co">// for Semigroup</span>
 
 Semigroupal[AllErrorsOr]
-<span class="co">// res13: cats.Semigroupal[AllErrorsOr] = cats.data.ValidatedInstances$$anon$1@608391ab</span></code></pre></div>
+<span class="co">// res13: cats.Semigroupal[AllErrorsOr] = cats.data.ValidatedInstances$$anon$1@6a0f8b2d</span></code></pre></div>
 <p>As long as the compiler has all the implicits in scope to summon a <code>Semigroupal</code> of the correct type, we can use apply syntax or any of the other <code>Semigroupal</code> methods to accumulate errors as we like:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">syntax</span>.<span class="fu">apply</span>._ <span class="co">// for tupled</span>
 
@@ -6301,7 +6301,7 @@ and the `Either` representing negation.
 <img src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz4KPHN2ZyB3aWR0aD0iMTc2MXB4IiBoZWlnaHQ9IjY2MHB4IiB2aWV3Qm94PSIwIDAgMTc2MSA2NjAiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8IS0tIEdlbmVyYXRvcjogU2tldGNoIDQzLjIgKDM5MDY5KSAtIGh0dHA6Ly93d3cuYm9oZW1pYW5jb2RpbmcuY29tL3NrZXRjaCAtLT4KICAgIDx0aXRsZT5zaW1wbGUtY291bnRlcjU8L3RpdGxlPgogICAgPGRlc2M+Q3JlYXRlZCB3aXRoIFNrZXRjaC48L2Rlc2M+CiAgICA8ZGVmcz48L2RlZnM+CiAgICA8ZyBpZD0iUGFnZS0xIiBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyBpZD0ic2ltcGxlLWNvdW50ZXI1Ij4KICAgICAgICAgICAgPHJlY3QgaWQ9IkJhY2tncm91bmQiIGZpbGw9IiNGRkZGRkYiIHg9IjAiIHk9IjAiIHdpZHRoPSIxNzYxIiBoZWlnaHQ9IjY2MCI+PC9yZWN0PgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlLTEiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSI0IiB4PSI5ODEiIHk9IjQyMiIgd2lkdGg9IjE5NiIgaGVpZ2h0PSIxOTYiIHJ4PSI4Ij48L3JlY3Q+CiAgICAgICAgICAgIDx0ZXh0IGlkPSIxMSIgZm9udC1mYW1pbHk9IkZpcmFNb25vLVJlZ3VsYXIsIEZpcmEgTW9ubyIgZm9udC1zaXplPSI4MCIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgZmlsbD0iIzAwMDAwMCI+CiAgICAgICAgICAgICAgICA8dHNwYW4geD0iNjMyIiB5PSI1NDgiPjExPC90c3Bhbj4KICAgICAgICAgICAgPC90ZXh0PgogICAgICAgICAgICA8dGV4dCBpZD0iMTEiIGZvbnQtZmFtaWx5PSJGaXJhTW9uby1SZWd1bGFyLCBGaXJhIE1vbm8iIGZvbnQtc2l6ZT0iODAiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9IjEwMzEiIHk9IjU0NyI+MTE8L3RzcGFuPgogICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgIDxyZWN0IGlkPSJSZWN0YW5nbGUtMSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjQiIHg9IjU4MiIgeT0iNDIyIiB3aWR0aD0iMTk2IiBoZWlnaHQ9IjE5NiIgcng9IjgiPjwvcmVjdD4KICAgICAgICAgICAgPHBvbHlnb24gaWQ9IlBhdGgtMS1Db3B5LTIiIGZpbGw9IiNGNkE2MjMiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDg4NS40MDEwODUsIDM3NC40MDEwODUpIHJvdGF0ZSgtMzE1LjAwMDAwMCkgdHJhbnNsYXRlKC04ODUuNDAxMDg1LCAtMzc0LjQwMTA4NSkgIiBwb2ludHM9Ijc3Ny43NTU2NTUgMzU0LjY5MTk0NiA5NTMuMDQ2NTE1IDM1NC40MDEwODUgOTUzLjA0NjUxNSAzMzQuNDAxMDg1IDk5My4wNDY1MTUgMzczLjg5ODg1MiA5NTMuMDQ2NTE1IDQxNC40MDEwODUgOTUzLjA0NjUxNSAzOTQuNDAxMDg1IDc3Ny43NTU2NTUgMzk0LjY5MTk0NiI+PC9wb2x5Z29uPgogICAgICAgICAgICA8cG9seWdvbiBpZD0iUGF0aC0xLUNvcHktMiIgZmlsbD0iI0Y2QTYyMyIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoODc4LjQwMTA4NSwgMzc0LjQwMTA4NSkgcm90YXRlKC0yMjUuMDAwMDAwKSB0cmFuc2xhdGUoLTg3OC40MDEwODUsIC0zNzQuNDAxMDg1KSAiIHBvaW50cz0iNzcwLjc1NTY1NSAzNTQuNjkxOTQ2IDk0Ni4wNDY1MTUgMzU0LjQwMTA4NSA5NDYuMDQ2NTE1IDMzNC40MDEwODUgOTg2LjA0NjUxNSAzNzMuODk4ODUyIDk0Ni4wNDY1MTUgNDE0LjQwMTA4NSA5NDYuMDQ2NTE1IDM5NC40MDEwODUgNzcwLjc1NTY1NSAzOTQuNjkxOTQ2Ij48L3BvbHlnb24+CiAgICAgICAgICAgIDxyZWN0IGlkPSJSZWN0YW5nbGUtMSIgc3Ryb2tlPSIjMDAwMDAwIiBzdHJva2Utd2lkdGg9IjQiIHg9Ijk4MSIgeT0iMTIyIiB3aWR0aD0iMTk2IiBoZWlnaHQ9IjE5NiIgcng9IjgiPjwvcmVjdD4KICAgICAgICAgICAgPHRleHQgaWQ9IjYiIGZvbnQtZmFtaWx5PSJGaXJhTW9uby1SZWd1bGFyLCBGaXJhIE1vbm8iIGZvbnQtc2l6ZT0iODAiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9IjY1NiIgeT0iMjQ3Ij42PC90c3Bhbj4KICAgICAgICAgICAgPC90ZXh0PgogICAgICAgICAgICA8dGV4dCBpZD0iNSIgZm9udC1mYW1pbHk9IkZpcmFNb25vLVJlZ3VsYXIsIEZpcmEgTW9ubyIgZm9udC1zaXplPSI4MCIgZm9udC13ZWlnaHQ9Im5vcm1hbCIgZmlsbD0iIzAwMDAwMCI+CiAgICAgICAgICAgICAgICA8dHNwYW4geD0iMTA1NSIgeT0iMjQ3Ij41PC90c3Bhbj4KICAgICAgICAgICAgPC90ZXh0PgogICAgICAgICAgICA8cmVjdCBpZD0iUmVjdGFuZ2xlLTEiIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSI0IiB4PSI1ODIiIHk9IjEyMiIgd2lkdGg9IjE5NiIgaGVpZ2h0PSIxOTYiIHJ4PSI4Ij48L3JlY3Q+CiAgICAgICAgICAgIDx0ZXh0IGlkPSJNYWNoaW5lLUIiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNDIiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9Ijk4MS4yODMyMDMiIHk9IjcwIj5NYWNoaW5lIEI8L3RzcGFuPgogICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgIDx0ZXh0IGlkPSJNYWNoaW5lLUEiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iNDIiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9IjU4My40MzE2NDEiIHk9IjcwIj5NYWNoaW5lIEE8L3RzcGFuPgogICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgIDx0ZXh0IGlkPSJBZGQtY291bnRlcnMiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMzYiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9Ijc3NS40MzM1OTQiIHk9IjM4MiI+QWRkIGNvdW50ZXJzPC90c3Bhbj4KICAgICAgICAgICAgPC90ZXh0PgogICAgICAgICAgICA8dGV4dCBpZD0iSW5jb3JyZWN0LXJlc3VsdCEiIGZvbnQtZmFtaWx5PSJIZWx2ZXRpY2EiIGZvbnQtc2l6ZT0iMzYiIGZvbnQtd2VpZ2h0PSJub3JtYWwiIGZpbGw9IiMwMDAwMDAiPgogICAgICAgICAgICAgICAgPHRzcGFuIHg9IjEzMTguOTU5OTYiIHk9IjUyOSI+SW5jb3JyZWN0IHJlc3VsdCE8L3RzcGFuPgogICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgICAgIDxnIGlkPSJHcm91cCIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMTI3Mi42Nzk0NTUsIDUxOS42Nzk0NTUpIHJvdGF0ZSgtMzE1LjAwMDAwMCkgdHJhbnNsYXRlKC0xMjcyLjY3OTQ1NSwgLTUxOS42Nzk0NTUpIHRyYW5zbGF0ZSgxMjM1LjY3OTQ1NSwgNDgyLjE3OTQ1NSkiIGZpbGw9IiNGRjAwMDAiPgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9IlJlY3RhbmdsZSIgeD0iMCIgeT0iMjYuNTQ3NzI3MiIgd2lkdGg9IjczLjc0MzY4NjciIGhlaWdodD0iMjAuNjQ4MjMyMyI+PC9yZWN0PgogICAgICAgICAgICAgICAgPHJlY3QgaWQ9IlJlY3RhbmdsZSIgdHJhbnNmb3JtPSJ0cmFuc2xhdGUoMzYuODcxODQzLCAzNy4yNDA1NjIpIHJvdGF0ZSgtOTAuMDAwMDAwKSB0cmFuc2xhdGUoLTM2Ljg3MTg0MywgLTM3LjI0MDU2MikgIiB4PSIwIiB5PSIyOC4wMjI2MDA5IiB3aWR0aD0iNzMuNzQzNjg2NyIgaGVpZ2h0PSIxOC40MzU5MjE3Ij48L3JlY3Q+CiAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPHBvbHlnb24gaWQ9IlBhdGgtMS1Db3B5LTIiIGZpbGw9IiNGNkE2MjMiIHBvaW50cz0iMzI2IDIwMS4yOTA4NjEgNTAxLjI5MDg2MSAyMDEgNTAxLjI5MDg2MSAxODEgNTQxLjI5MDg2MSAyMjAuNDk3NzY3IDUwMS4yOTA4NjEgMjYxIDUwMS4yOTA4NjEgMjQxIDMyNiAyNDEuMjkwODYxIj48L3BvbHlnb24+CiAgICAgICAgICAgIDx0ZXh0IGlkPSJJbmNvbWluZy1yZXF1ZXN0IiBmb250LWZhbWlseT0iSGVsdmV0aWNhIiBmb250LXNpemU9IjM2IiBmb250LXdlaWdodD0ibm9ybWFsIiBmaWxsPSIjMDAwMDAwIj4KICAgICAgICAgICAgICAgIDx0c3BhbiB4PSIyMTEuNDIzODI4IiB5PSIxODIiPkluY29taW5nIHJlcXVlc3Q8L3RzcGFuPgogICAgICAgICAgICA8L3RleHQ+CiAgICAgICAgPC9nPgogICAgPC9nPgo8L3N2Zz4=" alt="Figure 26: Simple counters: second round of requests and (incorrect) reconciliation" id="fig:crdt:simple-counter5" />
 <p class="caption">Figure 26: Simple counters: second round of requests and (incorrect) reconciliation</p>
 </div>
-<p>This is clearly wrong! The problem is that simple counters don’t give us enough information about the history of interactions between the machines. Fortunately we don’t need to store the <em>complete</em> history to get the correct answer—just a summary of it. Let’s look at the GCounter see how it solves this problem.</p>
+<p>This is clearly wrong! The problem is that simple counters don’t give us enough information about the history of interactions between the machines. Fortunately we don’t need to store the <em>complete</em> history to get the correct answer—just a summary of it. Let’s look at how the GCounter solves this problem.</p>
 <h3 id="gcounters"><span class="header-section-number">11.2.2</span> GCounters</h3>
 <p>The first clever idea in the GCounter is to have each machine storing a <em>separate</em> counter for every machine it knows about (including itself). In the previous example we had two machines, <code>A</code> and <code>B</code>. In this situation both machines would store a counter for <code>A</code> and a counter for <code>B</code> as shown in Figure 27.</p>
 <div class="figure">
