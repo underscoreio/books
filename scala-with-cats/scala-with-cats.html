@@ -488,7 +488,7 @@ Json.<span class="fu">toJson</span>(<span class="fu">Person</span>(<span class="
 <span class="co">// import JsonWriterInstances._</span>
 
 implicitly[JsonWriter[String]]
-<span class="co">// res8: JsonWriter[String] = JsonWriterInstances$$anon$1@552f485</span></code></pre></div>
+<span class="co">// res8: JsonWriter[String] = JsonWriterInstances$$anon$1@38563298</span></code></pre></div>
 <p>Most type classes in Cats provide other means to summon instances. However, <code>implicitly</code> is a good fallback for debugging purposes. We can insert a call to <code>implicitly</code> within the general flow of our code to ensure the compiler can find an instance of a type class and ensure that there are no ambiguous implicit errors.</p>
 <h2 id="working-with-implicits"><span class="header-section-number">1.2</span> Working with Implicits</h2>
 <p>Working with type classes in Scala means working with implicit values and implicit parameters. There are a few rules we need to know to do this effectively.</p>
@@ -1602,7 +1602,7 @@ math.<span class="fu">abs</span>(x) <span class="co">// value, produced using a 
 <span class="co">// func: Int =&gt; Int = &lt;function1&gt;</span>
 
 <span class="kw">val</span> liftedFunc = Functor[Option].<span class="fu">lift</span>(func)
-<span class="co">// liftedFunc: Option[Int] =&gt; Option[Int] = cats.Functor$$Lambda$11698/1630828883@722bf240</span>
+<span class="co">// liftedFunc: Option[Int] =&gt; Option[Int] = cats.Functor$$Lambda$11698/1847181061@41c6929b</span>
 
 <span class="fu">liftedFunc</span>(Option(<span class="dv">1</span>))
 <span class="co">// res0: Option[Int] = Some(2)</span></code></pre></div>
@@ -1904,7 +1904,7 @@ decode[Box[Double]](<span class="st">&quot;123.4&quot;</span>)
 <p>What’s the relationship between the terms “contravariance”, “invariance”, and “covariance” and these different kinds of functor?</p>
 <p>If you recall from Section 1.6.1, variance affects subtyping, which is essentially our ability to use a value of one type in place of a value of another type without breaking the code.</p>
 <p>Subtyping can be viewed as a conversion. If <code>B</code> is a subtype of <code>A</code>, we can always convert a <code>B</code> to an <code>A</code>.</p>
-<p>Equivalently we could say that <code>B</code> is a subtype of <code>A</code> if there exists a function <code>A =&gt; B</code>. A standard covariant functor captures exactly this. If <code>F</code> is a covariant functor, wherever we have an <code>F[A]</code> and a conversion <code>A =&gt; B</code> we can always convert to an <code>F[B]</code>.</p>
+<p>Equivalently we could say that <code>B</code> is a subtype of <code>A</code> if there exists a function <code>B =&gt; A</code>. A standard covariant functor captures exactly this. If <code>F</code> is a covariant functor, wherever we have an <code>F[B]</code> and a conversion <code>B =&gt; A</code> we can always convert to an <code>F[A]</code>.</p>
 <p>A contravariant functor captures the opposite case. If <code>F</code> is a contravariant functor, whenever we have a <code>F[A]</code> and a conversion <code>B =&gt; A</code> we can convert to an <code>F[B]</code>.</p>
 <p>Finally, invariant functors capture the case where we can convert from <code>F[A]</code> to <code>F[B]</code> via a function <code>A =&gt; B</code> and vice versa via a function <code>B =&gt; A</code>.</p>
 </div>
@@ -1974,7 +1974,7 @@ Monoid[Symbol].<span class="fu">empty</span>
 <span class="kw">val</span> func2 = (y: Double) =&gt; y * <span class="dv">2</span>
 
 <span class="kw">val</span> func3 = func1.<span class="fu">map</span>(func2)
-<span class="co">// func3: Int =&gt; Double = scala.runtime.AbstractFunction1$$Lambda$7404/929670420@4e92f350</span></code></pre></div>
+<span class="co">// func3: Int =&gt; Double = scala.runtime.AbstractFunction1$$Lambda$7404/1466963433@46f792aa</span></code></pre></div>
 <p>but failed if the flag was missing:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> func3 = func1.<span class="fu">map</span>(func2)
 <span class="co">// &lt;console&gt;: error: value map is not a member of Int =&gt; Double</span>
@@ -2042,7 +2042,7 @@ either.<span class="fu">map</span>(_ + <span class="dv">1</span>)
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> func2b: Double &lt;= Double = func2
 
 <span class="kw">val</span> func3c = func2b.<span class="fu">contramap</span>(func1)
-<span class="co">// func3c: Double &lt;= Int = scala.runtime.AbstractFunction1$$Lambda$7404/929670420@3c871ca1</span></code></pre></div>
+<span class="co">// func3c: Double &lt;= Int = scala.runtime.AbstractFunction1$$Lambda$7404/1466963433@64b50874</span></code></pre></div>
 <p>The difference between <code>func2</code> and <code>func2b</code> is purely syntactic—both refer to the same value and the type aliases are otherwise completely compatible. Incredibly, however, this simple rephrasing is enough to give the compiler the hint it needs to solve the problem.</p>
 <p>It is rare that we have to do this kind of right-to-left elimination. Most multi-parameter type constructors are designed to be right-biased, requiring the left-to-right elimination that is supported by the compiler out of the box. However, it is useful to know about <code>-Ypartial-unification</code> and this quirk of elimination order in case you ever come across an odd scenario like the one above.</p>
 <h2 id="summary-2"><span class="header-section-number">3.9</span> Summary</h2>
@@ -2280,7 +2280,7 @@ Monad[Vector].<span class="fu">flatMap</span>(Vector(<span class="dv">1</span>, 
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> scala.<span class="fu">concurrent</span>.<span class="fu">ExecutionContext</span>.<span class="fu">Implicits</span>.<span class="fu">global</span>
 
 <span class="kw">val</span> fm = Monad[Future]
-<span class="co">// fm: cats.Monad[scala.concurrent.Future] = cats.instances.FutureInstances$$anon$1@3c5f21ab</span></code></pre></div>
+<span class="co">// fm: cats.Monad[scala.concurrent.Future] = cats.instances.FutureInstances$$anon$1@53c37657</span></code></pre></div>
 <p>The <code>Monad</code> instance uses the captured <code>ExecutionContext</code> for subsequent calls to <code>pure</code> and <code>flatMap</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> future = fm.<span class="fu">flatMap</span>(fm.<span class="fu">pure</span>(<span class="dv">1</span>))(x =&gt; fm.<span class="fu">pure</span>(x + <span class="dv">2</span>))
 
@@ -2724,13 +2724,13 @@ exn.<span class="fu">raiseError</span>[Try, Int]
   math.<span class="fu">random</span>
 }
 <span class="co">// Computing X</span>
-<span class="co">// x: Double = 0.828821237871653</span>
+<span class="co">// x: Double = 0.013533499657218728</span>
 
 x <span class="co">// first access</span>
-<span class="co">// res0: Double = 0.828821237871653</span>
+<span class="co">// res0: Double = 0.013533499657218728</span>
 
 x <span class="co">// second access</span>
-<span class="co">// res1: Double = 0.828821237871653</span></code></pre></div>
+<span class="co">// res1: Double = 0.013533499657218728</span></code></pre></div>
 <p>By contrast, <code>defs</code> are lazy and not memoized. The code to compute <code>y</code> below is not run until we access it (lazy), and is re-run on every access (not memoized):</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">def</span> y = {
   <span class="fu">println</span>(<span class="st">&quot;Computing Y&quot;</span>)
@@ -2740,11 +2740,11 @@ x <span class="co">// second access</span>
 
 y <span class="co">// first access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res2: Double = 0.8068798927021629</span>
+<span class="co">// res2: Double = 0.5548281126990907</span>
 
 y <span class="co">// second access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res3: Double = 0.9741888122553769</span></code></pre></div>
+<span class="co">// res3: Double = 0.7681777032036599</span></code></pre></div>
 <p>Last but not least, <code>lazy vals</code> are lazy and memoized. The code to compute <code>z</code> below is not run until we access it for the first time (lazy). The result is then cached and re-used on subsequent accesses (memoized):</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">lazy</span> <span class="kw">val</span> z = {
   <span class="fu">println</span>(<span class="st">&quot;Computing Z&quot;</span>)
@@ -2754,71 +2754,71 @@ y <span class="co">// second access</span>
 
 z <span class="co">// first access</span>
 <span class="co">// Computing Z</span>
-<span class="co">// res4: Double = 0.8103134694961557</span>
+<span class="co">// res4: Double = 0.45707125364871903</span>
 
 z <span class="co">// second access</span>
-<span class="co">// res5: Double = 0.8103134694961557</span></code></pre></div>
+<span class="co">// res5: Double = 0.45707125364871903</span></code></pre></div>
 <h3 id="evals-models-of-evaluation"><span class="header-section-number">4.6.2</span> Eval’s Models of Evaluation</h3>
 <p><code>Eval</code> has three subtypes: <code>Now</code>, <code>Later</code>, and <code>Always</code>. We construct these with three constructor methods, which create instances of the three classes and return them typed as <code>Eval</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">Eval</span>
 
 <span class="kw">val</span> now = Eval.<span class="fu">now</span>(math.<span class="fu">random</span> + <span class="dv">1000</span>)
-<span class="co">// now: cats.Eval[Double] = Now(1000.6093560712978)</span>
+<span class="co">// now: cats.Eval[Double] = Now(1000.337992547842)</span>
 
 <span class="kw">val</span> later = Eval.<span class="fu">later</span>(math.<span class="fu">random</span> + <span class="dv">2000</span>)
-<span class="co">// later: cats.Eval[Double] = cats.Later@b38e255</span>
+<span class="co">// later: cats.Eval[Double] = cats.Later@37f34fd2</span>
 
 <span class="kw">val</span> always = Eval.<span class="fu">always</span>(math.<span class="fu">random</span> + <span class="dv">3000</span>)
-<span class="co">// always: cats.Eval[Double] = cats.Always@7aa03230</span></code></pre></div>
+<span class="co">// always: cats.Eval[Double] = cats.Always@486516b</span></code></pre></div>
 <p>We can extract the result of an <code>Eval</code> using its <code>value</code> method:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">now.<span class="fu">value</span>
-<span class="co">// res6: Double = 1000.6093560712978</span>
+<span class="co">// res6: Double = 1000.337992547842</span>
 
 later.<span class="fu">value</span>
-<span class="co">// res7: Double = 2000.2568996853545</span>
+<span class="co">// res7: Double = 2000.863079768816</span>
 
 always.<span class="fu">value</span>
-<span class="co">// res8: Double = 3000.7835394144035</span></code></pre></div>
+<span class="co">// res8: Double = 3000.710688646907</span></code></pre></div>
 <p>Each type of <code>Eval</code> calculates its result using one of the evaluation models defined above. <code>Eval.now</code> captures a value <em>right now</em>. Its semantics are similar to a <code>val</code>—eager and memoized:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> x = Eval.<span class="fu">now</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing X&quot;</span>)
   math.<span class="fu">random</span>
 }
 <span class="co">// Computing X</span>
-<span class="co">// x: cats.Eval[Double] = Now(0.8561858941490939)</span>
+<span class="co">// x: cats.Eval[Double] = Now(0.5415551857150346)</span>
 
 x.<span class="fu">value</span> <span class="co">// first access</span>
-<span class="co">// res9: Double = 0.8561858941490939</span>
+<span class="co">// res9: Double = 0.5415551857150346</span>
 
 x.<span class="fu">value</span> <span class="co">// second access</span>
-<span class="co">// res10: Double = 0.8561858941490939</span></code></pre></div>
+<span class="co">// res10: Double = 0.5415551857150346</span></code></pre></div>
 <p><code>Eval.always</code> captures a lazy computation, similar to a <code>def</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> y = Eval.<span class="fu">always</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing Y&quot;</span>)
   math.<span class="fu">random</span>
 }
-<span class="co">// y: cats.Eval[Double] = cats.Always@3d65aec1</span>
+<span class="co">// y: cats.Eval[Double] = cats.Always@3289cc05</span>
 
 y.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res11: Double = 0.20044347463534973</span>
+<span class="co">// res11: Double = 0.06355685569536818</span>
 
 y.<span class="fu">value</span> <span class="co">// second access</span>
 <span class="co">// Computing Y</span>
-<span class="co">// res12: Double = 0.6306326024648614</span></code></pre></div>
+<span class="co">// res12: Double = 0.27425753581857903</span></code></pre></div>
 <p>Finally, <code>Eval.later</code> captures a lazy, memoized computation, similar to a <code>lazy val</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> z = Eval.<span class="fu">later</span> {
   <span class="fu">println</span>(<span class="st">&quot;Computing Z&quot;</span>)
   math.<span class="fu">random</span>
 }
-<span class="co">// z: cats.Eval[Double] = cats.Later@6059069c</span>
+<span class="co">// z: cats.Eval[Double] = cats.Later@7a533449</span>
 
 z.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Computing Z</span>
-<span class="co">// res13: Double = 0.11754104909945928</span>
+<span class="co">// res13: Double = 0.3819703252438429</span>
 
 z.<span class="fu">value</span> <span class="co">// second access</span>
-<span class="co">// res14: Double = 0.11754104909945928</span></code></pre></div>
+<span class="co">// res14: Double = 0.3819703252438429</span></code></pre></div>
 <p>The three behaviours are summarized below:</p>
 <div class="table-responsive">
 <table style="width:99%;">
@@ -2858,7 +2858,7 @@ z.<span class="fu">value</span> <span class="co">// second access</span>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> greeting = Eval.
   always { <span class="fu">println</span>(<span class="st">&quot;Step 1&quot;</span>); <span class="st">&quot;Hello&quot;</span> }.
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 2&quot;</span>); s<span class="st">&quot;$str world&quot;</span> }
-<span class="co">// greeting: cats.Eval[String] = cats.Eval$$anon$8@497e6146</span>
+<span class="co">// greeting: cats.Eval[String] = cats.Eval$$anon$8@79ddd73b</span>
 
 greeting.<span class="fu">value</span>
 <span class="co">// Step 1</span>
@@ -2873,7 +2873,7 @@ greeting.<span class="fu">value</span>
   a + b
 }
 <span class="co">// Calculating A</span>
-<span class="co">// ans: cats.Eval[Int] = cats.Eval$$anon$8@6ac067b7</span>
+<span class="co">// ans: cats.Eval[Int] = cats.Eval$$anon$8@12da1eee</span>
 
 ans.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Calculating B</span>
@@ -2890,7 +2890,7 @@ ans.<span class="fu">value</span> <span class="co">// second access</span>
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 2&quot;</span>); s<span class="st">&quot;$str sat on&quot;</span> }.
   memoize.
   map { str =&gt; <span class="fu">println</span>(<span class="st">&quot;Step 3&quot;</span>); s<span class="st">&quot;$str the mat&quot;</span> }
-<span class="co">// saying: cats.Eval[String] = cats.Eval$$anon$8@225eed8c</span>
+<span class="co">// saying: cats.Eval[String] = cats.Eval$$anon$8@159a20cc</span>
 
 saying.<span class="fu">value</span> <span class="co">// first access</span>
 <span class="co">// Step 1</span>
@@ -3285,7 +3285,7 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
 <span class="kw">val</span> a = State[Int, String] { state =&gt;
   (state, s<span class="st">&quot;The state is $state&quot;</span>)
 }
-<span class="co">// a: cats.data.State[Int,String] = cats.data.IndexedStateT@6cca9e53</span></code></pre></div>
+<span class="co">// a: cats.data.State[Int,String] = cats.data.IndexedStateT@6ceace82</span></code></pre></div>
 <p>In other words, an instance of <code>State</code> is a function that does two things:</p>
 <ul>
 <li>transforms an input state to an output state;</li>
@@ -3310,19 +3310,19 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
   <span class="kw">val</span> ans = num + <span class="dv">1</span>
   (ans, s<span class="st">&quot;Result of step1: $ans&quot;</span>)
 }
-<span class="co">// step1: cats.data.State[Int,String] = cats.data.IndexedStateT@e2d98c</span>
+<span class="co">// step1: cats.data.State[Int,String] = cats.data.IndexedStateT@76122894</span>
 
 <span class="kw">val</span> step2 = State[Int, String] { num =&gt;
   <span class="kw">val</span> ans = num * <span class="dv">2</span>
   (ans, s<span class="st">&quot;Result of step2: $ans&quot;</span>)
 }
-<span class="co">// step2: cats.data.State[Int,String] = cats.data.IndexedStateT@5982d592</span>
+<span class="co">// step2: cats.data.State[Int,String] = cats.data.IndexedStateT@1eaaaa5d</span>
 
 <span class="kw">val</span> both = <span class="kw">for</span> {
   a &lt;- step1
   b &lt;- step2
 } <span class="kw">yield</span> (a, b)
-<span class="co">// both: cats.data.IndexedStateT[cats.Eval,Int,Int,(String, String)] = cats.data.IndexedStateT@2d336af6</span>
+<span class="co">// both: cats.data.IndexedStateT[cats.Eval,Int,Int,(String, String)] = cats.data.IndexedStateT@47a10835</span>
 
 <span class="kw">val</span> (state, result) = both.<span class="fu">run</span>(<span class="dv">20</span>).<span class="fu">value</span>
 <span class="co">// state: Int = 42</span>
@@ -3337,31 +3337,31 @@ greetKitty.<span class="fu">run</span>(<span class="fu">Cat</span>(<span class="
 <li><code>modify</code> updates the state using an update function.</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> getDemo = State.<span class="fu">get</span>[Int]
-<span class="co">// getDemo: cats.data.State[Int,Int] = cats.data.IndexedStateT@5f10cd3e</span>
+<span class="co">// getDemo: cats.data.State[Int,Int] = cats.data.IndexedStateT@6ffe574a</span>
 
 getDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res3: (Int, Int) = (10,10)</span>
 
 <span class="kw">val</span> setDemo = State.<span class="fu">set</span>[Int](<span class="dv">30</span>)
-<span class="co">// setDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@18654165</span>
+<span class="co">// setDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@4168bec2</span>
 
 setDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res4: (Int, Unit) = (30,())</span>
 
 <span class="kw">val</span> pureDemo = State.<span class="fu">pure</span>[Int, String](<span class="st">&quot;Result&quot;</span>)
-<span class="co">// pureDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@7da49f73</span>
+<span class="co">// pureDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@6812d576</span>
 
 pureDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res5: (Int, String) = (10,Result)</span>
 
 <span class="kw">val</span> inspectDemo = State.<span class="fu">inspect</span>[Int, String](_ + <span class="st">&quot;!&quot;</span>)
-<span class="co">// inspectDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@24ad766f</span>
+<span class="co">// inspectDemo: cats.data.State[Int,String] = cats.data.IndexedStateT@37c08614</span>
 
 inspectDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res6: (Int, String) = (10,10!)</span>
 
 <span class="kw">val</span> modifyDemo = State.<span class="fu">modify</span>[Int](_ + <span class="dv">1</span>)
-<span class="co">// modifyDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@3f81d8a3</span>
+<span class="co">// modifyDemo: cats.data.State[Int,Unit] = cats.data.IndexedStateT@4242cae6</span>
 
 modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="fu">value</span>
 <span class="co">// res7: (Int, Unit) = (11,())</span></code></pre></div>
@@ -3375,7 +3375,7 @@ modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="
   _ &lt;- modify[Int](_ + <span class="dv">1</span>)
   c &lt;- inspect[Int, Int](_ * <span class="dv">1000</span>)
 } <span class="kw">yield</span> (a, b, c)
-<span class="co">// program: cats.data.State[Int,(Int, Int, Int)] = cats.data.IndexedStateT@528336cd</span>
+<span class="co">// program: cats.data.State[Int,(Int, Int, Int)] = cats.data.IndexedStateT@22a799f8</span>
 
 <span class="kw">val</span> (state, result) = program.<span class="fu">run</span>(<span class="dv">1</span>).<span class="fu">value</span>
 <span class="co">// state: Int = 3</span>
@@ -3447,7 +3447,7 @@ modifyDemo.<span class="fu">run</span>(<span class="dv">10</span>).<span class="
   _   &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;2&quot;</span>)
   ans &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;+&quot;</span>)
 } <span class="kw">yield</span> ans
-<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@4275a95c</span>
+<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@19744e79</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res4: Int = 3</span></code></pre></div>
@@ -3465,7 +3465,7 @@ program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 </div>
 <p>We can use <code>evalAll</code> to conveniently evaluate multi-stage expressions:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">val</span> program = <span class="fu">evalAll</span>(List(<span class="st">&quot;1&quot;</span>, <span class="st">&quot;2&quot;</span>, <span class="st">&quot;+&quot;</span>, <span class="st">&quot;3&quot;</span>, <span class="st">&quot;*&quot;</span>))
-<span class="co">// program: CalcState[Int] = cats.data.IndexedStateT@2a6631ab</span>
+<span class="co">// program: CalcState[Int] = cats.data.IndexedStateT@1b66139a</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res6: Int = 9</span></code></pre></div>
@@ -3475,7 +3475,7 @@ program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
   _   &lt;- <span class="fu">evalAll</span>(List(<span class="st">&quot;3&quot;</span>, <span class="st">&quot;4&quot;</span>, <span class="st">&quot;+&quot;</span>))
   ans &lt;- <span class="fu">evalOne</span>(<span class="st">&quot;*&quot;</span>)
 } <span class="kw">yield</span> ans
-<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@45606aa5</span>
+<span class="co">// program: cats.data.IndexedStateT[cats.Eval,List[Int],List[Int],Int] = cats.data.IndexedStateT@e08e443</span>
 
 program.<span class="fu">runA</span>(Nil).<span class="fu">value</span>
 <span class="co">// res7: Int = 21</span></code></pre></div>
@@ -4247,7 +4247,7 @@ Validated.<span class="fu">fromOption</span>[String, Int](None, <span class="st"
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">instances</span>.<span class="fu">string</span>._ <span class="co">// for Semigroup</span>
 
 Semigroupal[AllErrorsOr]
-<span class="co">// res13: cats.Semigroupal[AllErrorsOr] = cats.data.ValidatedInstances$$anon$1@5efc8c3e</span></code></pre></div>
+<span class="co">// res13: cats.Semigroupal[AllErrorsOr] = cats.data.ValidatedInstances$$anon$1@3e486304</span></code></pre></div>
 <p>As long as the compiler has all the implicits in scope to summon a <code>Semigroupal</code> of the correct type, we can use apply syntax or any of the other <code>Semigroupal</code> methods to accumulate errors as we like:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">syntax</span>.<span class="fu">apply</span>._ <span class="co">// for tupled</span>
 
@@ -5211,14 +5211,14 @@ TODO:
 <span class="co">// future4: scala.concurrent.Future[Int] = Future(&lt;not completed&gt;)</span></code></pre></div>
 <p>As we saw in Section 7.2, we can convert a <code>List[Future[A]]</code> to a <code>Future[List[A]]</code> using <code>Future.sequence</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala">Future.<span class="fu">sequence</span>(List(Future(<span class="dv">1</span>), Future(<span class="dv">2</span>), Future(<span class="dv">3</span>)))
-<span class="co">// res8: scala.concurrent.Future[List[Int]] = Future(Success(List(1, 2, 3)))</span></code></pre></div>
+<span class="co">// res8: scala.concurrent.Future[List[Int]] = Future(&lt;not completed&gt;)</span></code></pre></div>
 <p>or an instance of <code>Traverse</code>:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> cats.<span class="fu">instances</span>.<span class="fu">future</span>._ <span class="co">// for Applicative</span>
 <span class="kw">import</span> cats.<span class="fu">instances</span>.<span class="fu">list</span>._   <span class="co">// for Traverse</span>
 <span class="kw">import</span> cats.<span class="fu">syntax</span>.<span class="fu">traverse</span>._  <span class="co">// for sequence</span>
 
 List(Future(<span class="dv">1</span>), Future(<span class="dv">2</span>), Future(<span class="dv">3</span>)).<span class="fu">sequence</span>
-<span class="co">// res9: scala.concurrent.Future[List[Int]] = Future(Success(List(1, 2, 3)))</span></code></pre></div>
+<span class="co">// res9: scala.concurrent.Future[List[Int]] = Future(&lt;not completed&gt;)</span></code></pre></div>
 <p>An <code>ExecutionContext</code> is required in either case. Finally, we can use <code>Await.result</code> to block on a <code>Future</code> until a result is available:</p>
 <div class="sourceCode"><pre class="sourceCode scala"><code class="sourceCode scala"><span class="kw">import</span> scala.<span class="fu">concurrent</span>._
 <span class="kw">import</span> scala.<span class="fu">concurrent</span>.<span class="fu">duration</span>._
